@@ -3,3 +3,4 @@
 Carpetas:
 
 - charts: manifiestos de helm para despliegue de apps
+- docker-images: imagenes de soporte para dcm4che y otras imagenes docker customizadas
