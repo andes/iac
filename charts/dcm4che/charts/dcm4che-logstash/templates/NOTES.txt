@@ -1,0 +1,1 @@
+logstash es un servicio interno a DCM4Che por lo que no puede ser accedido desde el exterior.

@@ -1,0 +1,7 @@
+Kibana es un servicio con seguridad de DCM4Che por lo que no puede ser accedido desde el exterior. Para acceder al mismo debe utilizar el gatekeeper proporcionado.
+
+En caso de desear acceder a este servicio, puede realizar desde su computadora...
+
+kubectl port-forward --namespace {{ .Release.Namespace }} {{ include "dcm4che-kibana.fullname" . }} 5601:5601
+
+Y luego conectarse al puerto local de su equipo (5601) que redireccionará el tráfico al POD de Kibana

@@ -1,0 +1,49 @@
+
+# Tomando como ejemplo hospital.test.com para el nombre de dominio
+# Se generan las siguientes rutas en el ingress
+#   - kibana-pacshospital.test.com
+#   - keycloak-pacshospital.test.com
+#   - visorhospital.test.com
+#   - pacshospital.test.com
+#   - console-pacshospital.test.com
+
+
+# No cambiar el prefix
+global:
+  prefix: dcm4che
+  domain: hpn.andes.gob.ar
+  https_port: 30443
+  ae_title: DCM4CHEE
+  keycloak_user: admin
+  keycloak_password: admin
+  keycloak_regular_user: user
+  keycloak_regular_password: user123
+  andes_keycloak_secret: 
+  # keycloak_api_user: api
+  # keycloak_api_password: api123  
+
+  persistence:
+    enabled: true
+    type: "PVC"
+    storageClass: ""
+    # path: "/k8s"
+  tls:
+    custom_cert: true
+    ca: "-empty-"
+    # key: "-empty-"
+    
+# Fluentbit
+fluent-bit:
+  enabled: true
+  backend:
+    type: "http"
+    http:
+      host: dcm4che-logstash
+      port: 8080
+      format: json
+      json_date_format: iso8601
+
+  
+dcm4che-gatekeeper:
+  enabled: true
+

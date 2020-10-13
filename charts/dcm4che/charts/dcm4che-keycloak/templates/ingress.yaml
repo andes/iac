@@ -1,0 +1,145 @@
+{{- if .Values.ingress.enabled -}}
+
+{{- $fullName := include "dcm4che-keycloak.fullname" . -}}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors-keycloak
+spec:
+  headers:
+    accessControlAllowMethods:
+      - "GET"
+      - "OPTIONS"
+      - "PUT"
+      - "POST"
+    accessControlAllowOriginList:
+      - "https://pacs{{ .Values.global.domain }}:{{ $.Values.global.https_port }}"
+      - "https://pacs{{ .Values.global.domain }}"
+      - "https://console-pacs{{ .Values.global.domain }}:{{ $.Values.global.https_port }}"
+      - "https://console-pacs{{ .Values.global.domain }}"
+      - "https://keycloak-pacs{{ .Values.global.domain }}:{{ $.Values.global.https_port }}"
+      - "https://keycloak-pacs{{ .Values.global.domain }}"
+      - "https://visor{{ .Values.global.domain }}:{{ $.Values.global.https_port }}"
+      - "https://visor{{ .Values.global.domain }}"
+      - "http://172.16.80.19"
+    accessControlAllowHeaders:
+      - "authorization"
+    addVaryHeader: true
+    accessControlAllowCredentials: true
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: keycloak-redirect-custom-ingress
+spec:
+  redirectRegex:
+    regex: ^https://(.*){{ $.Values.global.domain }}(:[0-9]*)/$
+    replacement: https://${1}{{ $.Values.global.domain }}${2}/auth/admin/dcm4che/console/    
+
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: keycloak-redirect-custom-lb
+spec:
+  redirectRegex:
+    regex: ^https://(.*){{ $.Values.global.domain }}/$
+    replacement: https://${1}{{ $.Values.global.domain }}/auth/admin/dcm4che/console/    
+
+# ---
+
+
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: {{ $fullName }}-http
+# spec:
+#   entryPoints:
+#     - web
+#   routes:
+#   {{- range .Values.ingress.hosts.nonTLS }}  
+#   - match: Host(`{{ .host }}.{{ $.Values.global.domain }}`)
+#     kind: Rule
+#     middlewares:
+#     - name: cors-keycloak
+#     - name: keycloak-redirect-https
+#     services:
+#     - name:  {{ .service }}
+#       port: {{ .port }}
+#   {{- end }}
+
+
+
+{{- if .Values.ingress.withTLS }}
+
+---
+
+# # Create cert
+# apiVersion: cert-manager.io/v1alpha2
+# kind: Issuer
+# metadata:
+#   name: {{ $fullName }}
+# spec:
+#   selfSigned: {}
+
+# ---
+# apiVersion: cert-manager.io/v1alpha2
+# kind: Certificate
+# metadata:
+#   name: {{ $fullName }}-cert
+# spec:
+#   commonName: {{ $fullName }}
+#   secretName: {{ $fullName }}-cert
+#   issuerRef:
+#     name: {{ $fullName }}
+#   dnsNames: 
+#   {{- range .Values.ingress.hosts.TLS }}  
+#   - {{ .host }}.{{ $.Values.global.domain }}
+#   {{- end}}
+  
+# ---   
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ $fullName }}-https
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  {{- range .Values.ingress.hosts.TLS }}  
+  - match: Host(`{{ .host }}{{ $.Values.global.domain }}`)
+    kind: Rule
+    middlewares:
+    - name: cors-keycloak  
+    - name: dcm4che-compress
+    - name: keycloak-redirect-custom-ingress
+    - name: keycloak-redirect-custom-lb
+    services:
+    - name:  {{ .service }}
+      port: {{ .port }}
+      scheme: https
+  {{- end }}
+  tls:
+    hosts: 
+    {{- range .Values.ingress.hosts.TLS }}      
+      - {{ .host }}{{ $.Values.global.domain }}
+    {{- end}}
+    # secretName: {{ $fullName }}-cert
+    #secretName: dcm4che-certs
+    passthrough: false
+    options:
+      name: dcm4che-tls-options
+    # stores:
+    #   default:
+    #     defaultCertificate:
+    #       certFile: /certs/tls.crt
+    #       keyFile: /certs/tls.key
+
+{{- end}}
+{{- end}}
+
+

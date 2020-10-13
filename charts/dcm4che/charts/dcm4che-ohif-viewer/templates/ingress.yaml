@@ -1,0 +1,102 @@
+{{- if .Values.ingress.enabled -}}
+
+{{- $fullName := include "dcm4che-ohif.fullname" . -}}
+
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: {{ $fullName }}-http
+# spec:
+#   entryPoints:
+#     - web
+#   routes:
+#   {{- range .Values.ingress.hosts.nonTLS }}  
+#   - match: Host(`{{ .host }}.{{ $.Values.global.domain }}`)
+#     kind: Rule
+#     services:
+#     - name:  {{ .service }}
+#       port: {{ .port }}
+
+#   {{- end }}
+
+
+{{- if .Values.ingress.withTLS }}
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors-ohif
+spec:
+  headers:
+    accessControlAllowMethods:
+      - "GET"
+      - "OPTIONS"
+      - "PUT"
+      - "POST"
+    accessControlAllowOriginList:
+      - "https://visor{{ .Values.global.domain }}:{{ $.Values.global.https_port }}"
+    accessControlAllowHeaders:
+      - "authorization"
+    addVaryHeader: true
+    accessControlAllowCredentials: true
+
+# ---
+
+# # Create cert
+# apiVersion: cert-manager.io/v1alpha2
+# kind: Issuer
+# metadata:
+#   name: {{ $fullName }}
+# spec:
+#   selfSigned: {}
+# ---
+# apiVersion: cert-manager.io/v1alpha2
+# kind: Certificate
+# metadata:
+#   name: {{ $fullName }}-cert
+# spec:
+#   commonName: {{ $fullName }}
+#   secretName: {{ $fullName }}-cert
+#   issuerRef:
+#     name: {{ $fullName }}
+#   dnsNames: 
+#   {{- range .Values.ingress.hosts.TLS }}  
+#   - {{ .host }}.{{ $.Values.global.domain }}
+#   {{- end}}
+
+
+---  
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ $fullName }}-https
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  {{- range .Values.ingress.hosts.TLS }}  
+  - match: Host(`{{ .host }}{{ $.Values.global.domain }}`)
+    kind: Rule
+    middlewares:
+    - name: dcm4che-compress
+    - name: cors-ohif
+    #- name: dcm4che-redirect-https
+    services:
+    - name:  {{ .service }}
+      port: {{ .port }}
+      scheme: http
+
+  {{- end }}
+  tls:
+    hosts: 
+    {{- range .Values.ingress.hosts.TLS }}      
+      - {{ .host }}{{ $.Values.global.domain }}
+    {{- end}}
+    passthrough: false
+    options:
+      name: dcm4che-tls-options
+{{- end}}
+{{- end}}
+
+
