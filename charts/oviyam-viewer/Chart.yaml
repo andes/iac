@@ -1,5 +1,5 @@
 apiVersion: v2
-name: oviyam-viewer
+name: dcm4che-oviyam
 description: Viewer oviyam
 
 # A chart can be either an 'application' or a 'library' chart.
