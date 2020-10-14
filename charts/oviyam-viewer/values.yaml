@@ -13,7 +13,6 @@ global:
   prefix: dcm4che
   domain: hpn.192.168.0.5.nip.io
   https_port: 30443
-  ae_title: DCM4CHEE
 
 
 

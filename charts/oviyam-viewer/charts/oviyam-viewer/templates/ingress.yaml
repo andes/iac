@@ -1,4 +1,3 @@
-
 {{- $fullName := include "dcm4che-oviyam.fullname" . -}}
 
 # # Create cert
