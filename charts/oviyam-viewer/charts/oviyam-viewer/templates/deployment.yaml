@@ -39,11 +39,11 @@ spec:
           #   httpGet:
           #     path: /
           #     port: http
-          volumeMounts:
-          - name: config-files
-            mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/conf/oviyam2-7-config.xml
-            subPath: oviyam2-7-config.xml
-            readOnly: true
+          # volumeMounts:
+          # - name: config-files
+          #   mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/conf/oviyam2-7-config.xml
+          #   subPath: oviyam2-7-config.xml
+          #   readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}          
       {{- with .Values.nodeSelector }}
