@@ -33,7 +33,7 @@ service:
   type: ClusterIP
   ports:
 
-    - name: https
+    - name: http
       number: 8080
       protocol: TCP
   
