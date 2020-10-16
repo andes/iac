@@ -1,3 +1,5 @@
+# image: andesnqn/dcm4che-init-pem-to-cert
+
 FROM alpine
 
 RUN apk add --update openssl openjdk11-jre-headless && rm -rf /var/cache/apk/*

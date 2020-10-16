@@ -1,3 +1,5 @@
+# image: andesnqn/dcm4che-keycloak
+
 FROM dcm4che/keycloak:11.0.0
 
 COPY setenv.sh /
