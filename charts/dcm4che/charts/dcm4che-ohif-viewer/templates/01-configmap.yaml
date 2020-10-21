@@ -9,7 +9,7 @@ data:
     // default: '/'
     routerBasename: '/',
     extensions: [],
-    showStudyList: true,
+    showStudyList: false,
     filterQueryParam: false,
     servers: {
         dicomWeb: [
