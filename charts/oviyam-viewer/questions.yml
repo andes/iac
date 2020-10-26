@@ -13,3 +13,17 @@ questions:
   label: "HTTPS port"
   group: "General"
 
+- variable: global.ae_title
+  default: DCM4CHE
+  description: AE Title 
+  type: string
+  label: AE Title
+  group: General
+
+
+- variable: global.pacs_hostname
+  default: pacshpn.andes.gob.ar
+  description: PACS Server
+  type: string
+  label: PACS Server 
+  group: General
