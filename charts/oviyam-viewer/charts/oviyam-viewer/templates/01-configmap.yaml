@@ -48,8 +48,8 @@ data:
         <servers class="java.util.ArrayList">
             <server>
                 <logicalname>pacstesting</logicalname>
-                <aetitle>DCM4CHE</aetitle>
-                <hostname>pacshpn.andes.gob.ar</hostname>
+                <aetitle>{{ $.Values.global.ae_title }} </aetitle>
+                <hostname>{{ $.Values.global.pacs_hostname }}</hostname>
                 <port>11112</port>
                 <retrieve>C-GET</retrieve>
                 <wadocontext></wadocontext>
