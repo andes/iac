@@ -35,7 +35,7 @@ spec:
       - "PUT"
       - "POST"
     accessControlAllowOriginList:
-      - "https://visor{{ .Values.global.domain }}:{{ $.Values.global.https_port }}"
+      - "https://visor-pacs{{ .Values.global.domain }}:{{ $.Values.global.https_port }}"
     accessControlAllowHeaders:
       - "authorization"
     addVaryHeader: true
