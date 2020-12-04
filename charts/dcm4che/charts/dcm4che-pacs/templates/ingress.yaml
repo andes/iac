@@ -11,7 +11,7 @@
 #   entryPoints:
 #     - web
 #   routes:
-#   {{- range .Values.ingress.hosts.nonTLS }}  
+#   {{- range .Values.ingress.hosts.nonTLS }}
 #   - match: Host(`{{ .host }}.{{ $.Values.global.domain }}`)
 #     kind: Rule
 #     services:
@@ -42,10 +42,10 @@
 #   secretName: {{ $fullName }}-cert
 #   issuerRef:
 #     name: {{ $fullName }}
-#   dnsNames: 
-#   {{- range .Values.ingress.hosts.TLS }}  
+#   dnsNames:
+#   {{- range .Values.ingress.hosts.TLS }}
 #   - {{ .host }}.{{ $.Values.global.domain }}
-#   {{- end}}     
+#   {{- end}}
 
 
 ---
@@ -63,13 +63,13 @@ spec:
     accessControlAllowOriginList:
       - "https://pacs{{ .Values.global.domain }}:{{ $.Values.global.https_port }}"
       - "https://pacs{{ .Values.global.domain }}"
-      - "https://visor{{ .Values.global.domain }}:{{ $.Values.global.https_port }}"
-      - "https://visor{{ .Values.global.domain }}"
+      - "https://visor-pacs{{ .Values.global.domain }}:{{ $.Values.global.https_port }}"
+      - "https://visor-pacs{{ .Values.global.domain }}"
       - "http://172.16.80.19"
     accessControlAllowHeaders:
       - "Authorization"
-      - "Origin"   
-      - "Access-Control-Request-Headers"   
+      - "Origin"
+      - "Access-Control-Request-Headers"
       - "Access-Control-Request-Method"
       - "Accept"
     addVaryHeader: true
@@ -95,7 +95,7 @@ spec:
     regex: ^https://(.*){{ $.Values.global.domain }}/$
     replacement: https://${1}{{ $.Values.global.domain }}/dcm4chee-arc/ui2
 
----   
+---
 
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -105,7 +105,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-  {{- range .Values.ingress.hosts.TLS }}  
+  {{- range .Values.ingress.hosts.TLS }}
   - match: Host(`{{ .host }}{{ $.Values.global.domain }}`)
     kind: Rule
     middlewares:
@@ -121,8 +121,8 @@ spec:
       scheme: https
   {{- end }}
   tls:
-    hosts: 
-    {{- range .Values.ingress.hosts.TLS }}      
+    hosts:
+    {{- range .Values.ingress.hosts.TLS }}
       - {{ .host }}{{ $.Values.global.domain }}
     {{- end}}
     passthrough: false
@@ -139,7 +139,7 @@ spec:
   entryPoints:
     - nema
   routes:
-  {{- range .Values.ingress.hosts.TLS }}  
+  {{- range .Values.ingress.hosts.TLS }}
   - match: HostSNI(`*`)
     kind: Rule
     services:
@@ -159,7 +159,7 @@ spec:
   entryPoints:
     - dicom
   routes:
-  {{- range .Values.ingress.hosts.TLS }}  
+  {{- range .Values.ingress.hosts.TLS }}
   - match: HostSNI(`*`)
     kind: Rule
     services:
@@ -167,7 +167,7 @@ spec:
       port: 2762
       scheme: tcp
   {{- end }}
-  
+
 # HL7
 ---
 apiVersion: traefik.containo.us/v1alpha1
@@ -178,7 +178,7 @@ spec:
   entryPoints:
     - hl7
   routes:
-  {{- range .Values.ingress.hosts.TLS }}  
+  {{- range .Values.ingress.hosts.TLS }}
   - match: HostSNI(`*`)
     kind: Rule
     services:
@@ -195,14 +195,13 @@ spec:
   entryPoints:
     - hl7udp
   routes:
-  {{- range .Values.ingress.hosts.TLS }}  
+  {{- range .Values.ingress.hosts.TLS }}
   - match: HostSNI(`*`)
     kind: Rule
     services:
     - name:  {{ .service }}
       port: 2575
       scheme: udp
-  {{- end }}  
+  {{- end }}
 
 {{- end}}
-
