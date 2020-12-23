@@ -39,11 +39,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /
+              scheme: https
               port: 8843
               periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
+              scheme: https
               port: 8843
           env:
             {{- range $key, $val := .Values.env_vars }}
