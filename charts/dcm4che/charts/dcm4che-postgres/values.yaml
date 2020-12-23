@@ -37,7 +37,7 @@ service:
   type: ClusterIP
   ports:
     - name: postgres
-      number: 5432
+      number: 5432 # Don't change this port to mantain readiness and liveness probes
       protocol: TCP
 
 env_vars:

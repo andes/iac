@@ -36,14 +36,13 @@ spec:
             lifecycle:
               exec:
                 command: ["cd /init && chmod +x postStart.sh && /bin/sh -c postStart.sh"]
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+           livenessProbe:
+             tcpSocket:
+               port: 389
+               periodSeconds: 10
+           readinessProbe:
+             tcpSocket:
+               port: 389
           env:
             - name: AE_TITLE
               value: {{ $.Values.global.ae_title }}
