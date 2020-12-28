@@ -64,6 +64,9 @@ echo "Step 10"
 /opt/keycloak/bin/kcadm.sh create clients -r $REALM -s clientId=andes -s enabled=true -s clientAuthenticatorType=client-secret -s secret=$ANDES_SECRET
 /opt/keycloak/bin/kcadm.sh create clients -r $REALM -f /clients_conf/andes.json
 /opt/keycloak/bin/kcadm.sh add-roles --uusername service-account-andes --rolename user -r $REALM
+/opt/keycloak/bin/kcadm.sh add-roles --uusername andes --rolename user
+/opt/keycloak/bin/kcadm.sh remove-roles --uusername andes --rolename uma_authorization
+/opt/keycloak/bin/kcadm.sh remove-roles --uusername andes --rolename offline_access
 echo "Step 11"
 echo "Creating keycloak regular user"
 /opt/keycloak/bin/kcadm.sh create users -r $REALM -s username=$KEYCLOAK_REGULAR_USER -s enabled=true
@@ -72,5 +75,7 @@ echo "Step 12"
 # echo "Creating keycloak API user"
 # /opt/keycloak/bin/kcadm.sh create users -r $REALM -s username=$KEYCLOAK_API_USER -s enabled=true
 # /opt/keycloak/bin/kcadm.sh set-password -r $REALM --username $KEYCLOAK_API_USER --new-password $KEYCLOAK_API_PASSWORD
+
+
 
 touch $FILE
