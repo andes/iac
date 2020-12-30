@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox1
+  namespace: dcm4che
+  labels:
+    app: busybox1
+spec:
+  containers:
+  - image: busybox
+    command:
+      - sleep
+      - "7200"
+    imagePullPolicy: IfNotPresent
+    name: busybox
+    volumeMounts:
+      - mountPath: "/home"
+        name: volume-to-mantain
+  restartPolicy: Always
+  volumes:
+    - name: volume-to-mantain
+      persistentVolumeClaim:
+        claimName: dcm4che-postgres-data
