@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "dcm4che-postgres.fullname" . }}
+  name: {{ include "dcm4che-postgres.fullname" . }}-primary
   labels:
     {{- include "dcm4che-postgres.labels" . | nindent 4 }}
 spec:
@@ -44,12 +44,29 @@ spec:
             - name: {{ $key }}
               value: {{ $val | quote}}
             {{- end}}
-            - name: POSTGRES_USER
+            - name: PG_MODE
+              value: primary
+            - name: PG_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-admin
+                  key: password
+            - name: PG_PRIMARY_USER
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
                   key: username
-            - name: POSTGRES_PASSWORD
+            - name: PG_PRIMARY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: password            
+            - name: PG_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: username
+            - name: PG_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials

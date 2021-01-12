@@ -18,37 +18,43 @@ questions:
   description: "Andes Keycloak Secret"
   type: string
   label: "Andes Keykloak Secret"
-  group: "General"  
+  group: "Seguridad"  
 
 - variable: global.keycloak_user
   default: "admin"
   description: "Keycloak admin user"
   type: string
   label: "Keycloak user"
-  group: "General"
+  group: "Seguridad"
 
 - variable: global.keycloak_password
   default: "admin"
   description: "Keycloak admin pasword"
   type: string
   label: "Keycloak password"
-  group: "General"
+  group: "Seguridad"
   
 
 - variable: global.regular_user
   default: "user"
-  description: "Viewer user"
+  description: "Viewer usuario"
   type: string
-  label: "Keycloak regular user"
-  group: "General"
+  label: "Usuario regular de Keycloak"
+  group: "Seguridad"
 
 - variable: global.regular_password
   default: "user123"
   description: "Viewer password"
   type: string
-  label: "Keycloak regular password"
-  group: "General"
+  label: "Password de usuario regular de Keycloak"
+  group: "Seguridad"
 
+- variable: global.postgres_admin_password
+  default: "postgres123"
+  description: "Password administrador de Postgres"
+  type: string
+  label: "Password administrador de Postgres"
+  group: "Seguridad"
 # - variable: global.api_user
 #   default: "api"
 #   description: "Viewer user"

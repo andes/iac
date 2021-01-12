@@ -41,7 +41,8 @@ service:
       protocol: TCP
 
 env_vars:
-  POSTGRES_DB: "pacsdb"
+  PG_DATABASE: "pacsdb"
+  MAX_WAL_SENDERS: 5
   # POSTGRES_USER: "pacs"
   # POSTGRES_PASSWORD: "pacs" #@ToDo sacar a secrets
 
