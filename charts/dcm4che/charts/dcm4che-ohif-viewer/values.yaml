@@ -37,7 +37,7 @@ service:
   type: ClusterIP
   ports:
     - name: ohif-tcp
-      number: 80
+      number: 80 # Don't change this port to mantain readiness and liveness probes
       protocol: TCP
 
 ingress:

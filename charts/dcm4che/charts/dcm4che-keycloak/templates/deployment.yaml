@@ -36,14 +36,17 @@ spec:
             postStart:
               exec:
                 command: ["/bin/bash", "-c", "/postStart.sh"]            
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          livenessProbe:
+            httpGet:
+              path: /
+              scheme: HTTPS
+              port: 8843
+              periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              scheme: HTTPS
+              port: 8843
           env:
             {{- range $key, $val := .Values.env_vars }}
             - name: {{ $key }}
