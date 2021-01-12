@@ -14,5 +14,5 @@ spec:
       protocol: {{ $port.protocol }}
     {{- end}}
   selector:
-    {{ include "dcm4che-postgres.fullname" . }}-primary
+    app: {{ include "dcm4che-postgres.fullname" . }}-primary
 #     {{- include "dcm4che-postgres.selectorLabels" . | nindent 4 }} 
