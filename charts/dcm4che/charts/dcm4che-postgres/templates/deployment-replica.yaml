@@ -47,7 +47,7 @@ spec:
             - name: PG_MODE
               value: replica
             - name: PG_PRIMARY_HOST
-              value: {{ include "dcm4che-postgres.fullname" . }}-primary
+              value: {{ include "dcm4che-postgres.fullname" . }}-primary-0
             - name: PG_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
