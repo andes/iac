@@ -22,7 +22,7 @@ spec:
     {{- end }}
 
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Chart.Name }}-primary
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
