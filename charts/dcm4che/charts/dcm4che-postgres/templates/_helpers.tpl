@@ -34,9 +34,18 @@ Create chart name and version as used by the chart label.
 {{/*
 Common labels
 */}}
-{{- define "dcm4che-postgres.labels" -}}
+{{- define "dcm4che-postgres.labels-primary" -}}
 helm.sh/chart: {{ include "dcm4che-postgres.chart" . }}
-{{ include "dcm4che-postgres.selectorLabels" . }}
+{{ include "dcm4che-postgres.selectorLabels-primary" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{- define "dcm4che-postgres.labels-replica" -}}
+helm.sh/chart: {{ include "dcm4che-postgres.chart" . }}
+{{ include "dcm4che-postgres.selectorLabels-replica" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,9 +55,13 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "dcm4che-postgres.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "dcm4che-postgres.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{- define "dcm4che-postgres.selectorLabels-primary" -}}
+app.kubernetes.io/name: {{ include "dcm4che-postgres.name" . }}-primary
+app.kubernetes.io/instance: {{ .Release.Name }}-primary
+{{- end -}}
+{{- define "dcm4che-postgres.selectorLabels-replica" -}}
+app.kubernetes.io/name: {{ include "dcm4che-postgres.name" . }}-replica
+app.kubernetes.io/instance: {{ .Release.Name }}-replica
 {{- end -}}
 
 {{/*

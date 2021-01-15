@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: dcm4che/postgres-dcm4chee
+  repository: andesnqn/postgres-dcm4chee
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -41,7 +41,10 @@ service:
       protocol: TCP
 
 env_vars:
-  POSTGRES_DB: "pacsdb"
+  PG_DATABASE: "pacsdb"
+  MAX_WAL_SENDERS: 5
+  PG_PRIMARY_PORT: 5432
+  PG_PRIMARY_USER: "user_replica"
   # POSTGRES_USER: "pacs"
   # POSTGRES_PASSWORD: "pacs" #@ToDo sacar a secrets
 

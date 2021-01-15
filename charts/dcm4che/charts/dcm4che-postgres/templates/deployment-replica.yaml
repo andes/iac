@@ -3,18 +3,18 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "dcm4che-postgres.fullname" . }}
+  name: {{ include "dcm4che-postgres.fullname" . }}-replica
   labels:
-    {{- include "dcm4che-postgres.labels" . | nindent 4 }}
+    {{- include "dcm4che-postgres.labels-replica" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "dcm4che-postgres.selectorLabels" . | nindent 6 }}
+      {{- include "dcm4che-postgres.selectorLabels-replica" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "dcm4che-postgres.selectorLabels" . | nindent 8 }}
+        {{- include "dcm4che-postgres.selectorLabels-replica" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -44,12 +44,26 @@ spec:
             - name: {{ $key }}
               value: {{ $val | quote}}
             {{- end}}
-            - name: POSTGRES_USER
+            - name: PG_MODE
+              value: replica
+            - name: PG_PRIMARY_HOST
+              value: {{ include "dcm4che-postgres.fullname" . }}-primary
+            - name: PG_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-admin
+                  key: password
+            - name: PG_PRIMARY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: password            
+            - name: PG_USER
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
                   key: username
-            - name: POSTGRES_PASSWORD
+            - name: PG_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
@@ -90,7 +104,7 @@ spec:
         - name: {{ .Values.volume.name }}
           {{ if eq $.Values.global.persistence.type "PVC" }}
           persistentVolumeClaim:
-            claimName: {{ $fullName }}-{{ .Values.volume.name }}
+            claimName: {{ $fullName }}-{{ .Values.volume.name }}-replica
           {{ end }}
           {{ if eq $.Values.global.persistence.type "PATH" }}
           hostPath:
