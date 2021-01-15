@@ -51,11 +51,6 @@ spec:
                 secretKeyRef:
                   name: postgres-admin
                   key: password
-            - name: PG_PRIMARY_USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-credentials
-                  key: username
             - name: PG_PRIMARY_PASSWORD
               valueFrom:
                 secretKeyRef:
