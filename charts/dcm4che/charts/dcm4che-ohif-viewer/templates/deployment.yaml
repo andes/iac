@@ -3,10 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "dcm4che-ohif.fullname" . }}
-  labels:
-    {{- include "dcm4che-ohif.labels" . | nindent 4 }}
   annotations:
     seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
+  labels:
+    {{- include "dcm4che-ohif.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
