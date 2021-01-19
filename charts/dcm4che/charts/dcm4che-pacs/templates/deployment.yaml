@@ -12,6 +12,7 @@ metadata:
     seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "dcm4che-pacs.fullname" . }}
   selector:
     matchLabels:
       {{- include "dcm4che-pacs.selectorLabels" . | nindent 6 }}
@@ -53,7 +54,7 @@ spec:
               path: /
               scheme: HTTPS
               port: 8443 
-              periodSeconds: 10
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /

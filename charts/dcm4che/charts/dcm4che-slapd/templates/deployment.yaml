@@ -10,6 +10,7 @@ metadata:
     seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "dcm4che-slapd.fullname" . }}
   selector:
     matchLabels:
       {{- include "dcm4che-slapd.selectorLabels" . | nindent 6 }}
@@ -35,13 +36,13 @@ spec:
               protocol: {{ $port.protocol }}
             {{- end}}  
           lifecycle:
-            lifecycle:
+            postStart:
               exec:
                 command: ["cd /init && chmod +x postStart.sh && /bin/sh -c postStart.sh"]
           livenessProbe:
             tcpSocket:
               port: 389
-              periodSeconds: 10
+            periodSeconds: 10
           readinessProbe:
             tcpSocket:
               port: 389

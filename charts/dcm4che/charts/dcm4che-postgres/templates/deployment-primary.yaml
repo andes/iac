@@ -10,6 +10,7 @@ metadata:
     seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "dcm4che-postgres.fullname" . }}-primary
   selector:
     matchLabels:
       {{- include "dcm4che-postgres.selectorLabels-primary" . | nindent 6 }}
@@ -37,7 +38,7 @@ spec:
           livenessProbe:
             tcpSocket:
               port: 5432
-              periodSeconds: 10
+            periodSeconds: 10
           readinessProbe:
             tcpSocket:
               port: 5432 

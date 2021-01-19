@@ -10,6 +10,7 @@ metadata:
     seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "dcm4che-keycloak.fullname" . }}
   selector:
     matchLabels:
       {{- include "dcm4che-keycloak.selectorLabels" . | nindent 6 }}
@@ -43,7 +44,7 @@ spec:
               path: /
               scheme: HTTPS
               port: 8843
-              periodSeconds: 10
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
