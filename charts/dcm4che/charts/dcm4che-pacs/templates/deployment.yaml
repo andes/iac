@@ -9,6 +9,7 @@ metadata:
     {{- include "dcm4che-pacs.labels" . | nindent 4 }}
   annotations:
     secret.reloader.stakater.com/reload: "ingress-cert"
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

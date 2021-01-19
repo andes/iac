@@ -6,6 +6,8 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "dcm4che-elastic.labels" . | nindent 4 }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
