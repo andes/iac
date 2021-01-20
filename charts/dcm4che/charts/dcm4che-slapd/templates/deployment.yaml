@@ -67,7 +67,7 @@ spec:
           - name: init-files
             mountPath: /init/postStart.sh
             subPath: postStart.sh
-            readOnly: true            
+            readOnly: false            
           resources:
             {{- toYaml .Values.resources | nindent 12 }}          
       {{- with .Values.nodeSelector }}
