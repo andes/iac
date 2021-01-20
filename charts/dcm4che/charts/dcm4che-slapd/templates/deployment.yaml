@@ -35,10 +35,10 @@ spec:
             - containerPort: {{ $port.number }}
               protocol: {{ $port.protocol }}
             {{- end}}  
-          lifecycle:
-            postStart:
-              exec:
-                command: ["cd /init && chmod +x postStart.sh && /bin/sh -c /init/postStart.sh"]
+#          lifecycle:
+#            postStart:
+#              exec:
+#                command: ["cd /init && chmod +x postStart.sh && /bin/sh -c /init/postStart.sh"]
           livenessProbe:
             tcpSocket:
               port: 389
