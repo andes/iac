@@ -39,5 +39,8 @@ data:
           echo "Nothing to do - already run before"
           exit 0;
       fi
-      ldapmodify -x -W -D cn=admin,dc=dcm4che,dc=org -H ldapi:/// -f mwl.ldif
+      PASSWORD="${LDAP_ROOTPASS:-secret}"
+      toRun="ldapmodify -x -D cn=admin,"$LDAP_BASE_DN" -w "$PASSWORD" -H ldap:// -f mwl.ldif"
+      echo $toRun
+      $toRun
       touch $FILE
