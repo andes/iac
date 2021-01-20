@@ -112,3 +112,4 @@ spec:
         - name: init-files
           configMap:
             name: "slapd-init-configmap"                 
+            defaultMode: 0744
