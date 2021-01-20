@@ -40,7 +40,7 @@ data:
           exit 0;
       fi
       PASSWORD="${LDAP_ROOTPASS:-secret}"
-      toRun="ldapmodify -x -D cn=admin,"$LDAP_BASE_DN" -w "$PASSWORD" -H ldap:// -f mwl.ldif"
+      toRun="ldapmodify -x -D cn=admin,"$LDAP_BASE_DN" -w "$PASSWORD" -H ldap:// -f /init/mwl.ldif"
       echo $toRun
       $toRun
       touch $FILE

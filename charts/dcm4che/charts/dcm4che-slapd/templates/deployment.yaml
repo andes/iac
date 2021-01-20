@@ -38,7 +38,7 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["cd /init && /bin/sh -c /init/postStart.sh"]
+                command: ["/bin/sh", "-c",  "/init/postStart.sh"]
           livenessProbe:
             tcpSocket:
               port: 389
