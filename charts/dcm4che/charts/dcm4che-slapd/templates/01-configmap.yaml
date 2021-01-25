@@ -33,11 +33,38 @@ data:
         
   postStart.sh: |+
       #!/bin/sh
-      set -e
+      #set -e
       FILE=/tmp/SLAPD_IMPORTED
       if test -f "$FILE"; then
-          echo "Nothing to do - already run before"
-          exit 0;
+        echo "No tengo nada que hacer -> ya se corrio este script"
+        exit 0;
       fi
-      ldapmodify -x -W -D cn=admin,dc=dcm4che,dc=org -H ldapi:/// -f mwl.ldif
-      touch $FILE
+
+      POLL_INTERVAL=5
+      LDAP_DOWN_STATUS_CODE=255
+      STARTED=0
+
+      echo "Verificando si LDAP esta iniciado"
+      while [ $STARTED != 1 ]
+      do
+          ldapsearch -x -H ldap://
+          ldapResponse=$?
+          if [ $ldapResponse -eq $LDAP_DOWN_STATUS_CODE ]; then
+              echo "LDAP: down"
+          else
+              echo "LDAP: up"
+              STARTED=1
+          fi
+          sleep $POLL_INTERVAL
+      done
+
+
+      PASSWORD="${LDAP_ROOTPASS:-secret}"
+      toRun="ldapmodify -x -D cn=admin,"$LDAP_BASE_DN" -w "$PASSWORD" -H ldap:// -f /init/mwl.ldif"
+      echo $toRun
+      $toRun
+
+      if [ $? -eq 0]; then
+          touch $FILE
+      fi
+

@@ -4,6 +4,8 @@ metadata:
   name: {{ include "dcm4che-kibana.fullname" . }}
   labels:
     {{- include "dcm4che-kibana.labels" . | nindent 4 }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

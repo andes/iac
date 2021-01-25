@@ -11,7 +11,8 @@ metadata:
   name: {{ include "traefik.fullname" . }}
   labels:
     {{- include "traefik.labels" . | nindent 4 }}    
-
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
 spec:
   replicas: 1
   selector:

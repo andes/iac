@@ -6,8 +6,11 @@ metadata:
   name: {{ include "dcm4che-slapd.fullname" . }}
   labels:
     {{- include "dcm4che-slapd.labels" . | nindent 4 }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "dcm4che-slapd.fullname" . }}
   selector:
     matchLabels:
       {{- include "dcm4che-slapd.selectorLabels" . | nindent 6 }}
@@ -33,13 +36,13 @@ spec:
               protocol: {{ $port.protocol }}
             {{- end}}  
           lifecycle:
-            lifecycle:
+            postStart:
               exec:
-                command: ["cd /init && chmod +x postStart.sh && /bin/sh -c postStart.sh"]
+                command: ["/bin/sh", "-c",  "/init/postStart.sh"]
           livenessProbe:
             tcpSocket:
               port: 389
-              periodSeconds: 10
+            periodSeconds: 10
           readinessProbe:
             tcpSocket:
               port: 389
@@ -64,7 +67,7 @@ spec:
           - name: init-files
             mountPath: /init/postStart.sh
             subPath: postStart.sh
-            readOnly: true            
+            readOnly: false            
           resources:
             {{- toYaml .Values.resources | nindent 12 }}          
       {{- with .Values.nodeSelector }}
@@ -109,3 +112,4 @@ spec:
         - name: init-files
           configMap:
             name: "slapd-init-configmap"                 
+            defaultMode: 0744

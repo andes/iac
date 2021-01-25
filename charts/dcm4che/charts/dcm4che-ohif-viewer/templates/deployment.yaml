@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "dcm4che-ohif.fullname" . }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
   labels:
     {{- include "dcm4che-ohif.labels" . | nindent 4 }}
 spec:
@@ -35,7 +37,7 @@ spec:
             httpGet:
               path: /
               port: 80
-              periodSeconds: 10
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /

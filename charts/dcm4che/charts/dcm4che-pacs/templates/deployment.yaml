@@ -9,8 +9,10 @@ metadata:
     {{- include "dcm4che-pacs.labels" . | nindent 4 }}
   annotations:
     secret.reloader.stakater.com/reload: "ingress-cert"
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "dcm4che-pacs.fullname" . }}
   selector:
     matchLabels:
       {{- include "dcm4che-pacs.selectorLabels" . | nindent 6 }}
@@ -52,7 +54,7 @@ spec:
               path: /
               scheme: HTTPS
               port: 8443 
-              periodSeconds: 10
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
