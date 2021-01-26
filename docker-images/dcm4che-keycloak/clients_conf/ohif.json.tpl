@@ -1,16 +1,16 @@
 {
     "clientId": "ohif",
-    "rootUrl": "https://visor-hpn{{DOMAIN}}",
-    "adminUrl": "https://visor-hpn{{DOMAIN}}",
+    "rootUrl": "https://visor-pacs{{DOMAIN}}",
+    "adminUrl": "https://visor-pacs{{DOMAIN}}",
     "surrogateAuthRequired": false,
     "enabled": true,
     "alwaysDisplayInConsole": false,
     "clientAuthenticatorType": "client-secret",
     "redirectUris": [
-        "https://visor-hpn{{DOMAIN}}/*"
+        "https://visor-pacs{{DOMAIN}}/*"
     ],
     "webOrigins": [
-        "https://visor-hpn{{DOMAIN}}"
+        "https://visor-pacs{{DOMAIN}}"
     ],
     "notBefore": 0,
     "bearerOnly": false,
