@@ -35,14 +35,14 @@ questions:
   group: "Seguridad"
   
 
-- variable: global.regular_user
+- variable: global.keycloak_regular_user
   default: "user"
   description: "Viewer usuario"
   type: string
   label: "Usuario regular de Keycloak"
   group: "Seguridad"
 
-- variable: global.regular_password
+- variable: global.keycloak_regular_password
   default: "user123"
   description: "Viewer password"
   type: string
