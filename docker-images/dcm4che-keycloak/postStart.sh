@@ -57,20 +57,26 @@ echo "Step 9"
 # Prepare and import kibana client (this one uses confidential login => it provides secret)
 sed 's/{{DOMAIN}}/'$GLOBAL_DOMAIN'/g' /clients_conf/kibana.json.tpl > /clients_conf/kibana.tmp
 sed 's/{{KIBANA_CLIENT_SECRET}}/'$KIBANA_CLIENT_SECRET'/g' /clients_conf/kibana.tmp > /clients_conf/kibana.json
+sed -i 's/{{ANDES_SECRET}}/'$ANDES_SECRET'/g' /clients_conf/andes.json 
 /opt/keycloak/bin/kcadm.sh create clients -r $REALM -f /clients_conf/kibana.json
 rm /clients_conf/kibana.tmp
 echo "Step 10"
 # Import andes client
-/opt/keycloak/bin/kcadm.sh create clients -r $REALM -s clientId=andes -s enabled=true -s clientAuthenticatorType=client-secret -s secret=$ANDES_SECRET
+# /opt/keycloak/bin/kcadm.sh create clients -r $REALM -s clientId=andes -s enabled=true -s clientAuthenticatorType=client-secret -s secret=$ANDES_SECRET
 /opt/keycloak/bin/kcadm.sh create clients -r $REALM -f /clients_conf/andes.json
-/opt/keycloak/bin/kcadm.sh add-roles --uusername service-account-andes --rolename user -r $REALM
-/opt/keycloak/bin/kcadm.sh add-roles --uusername andes --rolename user
-/opt/keycloak/bin/kcadm.sh remove-roles --uusername andes --rolename uma_authorization
-/opt/keycloak/bin/kcadm.sh remove-roles --uusername andes --rolename offline_access
+# /opt/keycloak/bin/kcadm.sh add-roles --uusername service-account-andes --rolename user -r $REALM
+# /opt/keycloak/bin/kcadm.sh add-roles --uusername andes --rolename user
+# /opt/keycloak/bin/kcadm.sh remove-roles --uusername andes --rolename uma_authorization
+# /opt/keycloak/bin/kcadm.sh remove-roles --uusername andes --rolename offline_access
 echo "Step 11"
 echo "Creating keycloak regular user"
 /opt/keycloak/bin/kcadm.sh create users -r $REALM -s username=$KEYCLOAK_REGULAR_USER -s enabled=true
 /opt/keycloak/bin/kcadm.sh set-password -r $REALM --username $KEYCLOAK_REGULAR_USER --new-password $KEYCLOAK_REGULAR_PASSWORD
+
+/opt/keycloak/bin/kcadm.sh remove-roles --uusername $KEYCLOAK_REGULAR_USER --rolename uma_authorization
+/opt/keycloak/bin/kcadm.sh remove-roles --uusername $KEYCLOAK_REGULAR_USER --rolename offline_access
+
+
 echo "Step 12"
 # echo "Creating keycloak API user"
 # /opt/keycloak/bin/kcadm.sh create users -r $REALM -s username=$KEYCLOAK_API_USER -s enabled=true
