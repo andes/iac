@@ -64,7 +64,7 @@ echo "Step 10"
 # Import andes client
 # /opt/keycloak/bin/kcadm.sh create clients -r $REALM -s clientId=andes -s enabled=true -s clientAuthenticatorType=client-secret -s secret=$ANDES_SECRET
 /opt/keycloak/bin/kcadm.sh create clients -r $REALM -f /clients_conf/andes.json
-# /opt/keycloak/bin/kcadm.sh add-roles --uusername service-account-andes --rolename user -r $REALM
+/opt/keycloak/bin/kcadm.sh add-roles --uusername service-account-andes --rolename user -r $REALM
 # /opt/keycloak/bin/kcadm.sh add-roles --uusername andes --rolename user
 # /opt/keycloak/bin/kcadm.sh remove-roles --uusername andes --rolename uma_authorization
 # /opt/keycloak/bin/kcadm.sh remove-roles --uusername andes --rolename offline_access
