@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard-migration-sips-be
+  labels:
+    app: dashboard-migration-sips-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: dashboard-migration-sips-be
+  template:
+    metadata:
+      labels:
+        name: dashboard-migration-sips-be
+        app: dashboard-migration-sips-be
+    spec:
+      containers:
+        - name: dashboard-migration-sips-be
+          image: "orlandobrea/andes-sips-dashboard-be"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+          env:
+            - name: DB_SERVER
+              value: {{ .Values.database.server }}
+            - name: DB_DATABASE 
+              value: {{ .Values.database.db }}
+            - name: DB_USER 
+              valueFrom:
+                secretKeyRef:
+                  name: dashboard-sips-be
+                  key: username                     
+            - name: DB_PASSWORD 
+              valueFrom:
+                secretKeyRef:
+                  name: dashboard-sips-be
+                  key: password                     
