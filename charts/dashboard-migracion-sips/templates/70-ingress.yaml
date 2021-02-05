@@ -14,17 +14,17 @@ metadata:
   name: dashboard-migration-sips-fe-https
 spec:
   entryPoints:
-    - websecure
+    - web
   routes:
   - match: Host(`{{ .Values.frontend.domain }}`)
     kind: Rule
     services:
     - name: dashboard-migration-sips-fe 
       port: 80
-  tls:
-    hosts:
-      - sips-dashboard.andes.gob.ar
-    passthrough: false
-    options:
-      name: dashboard-tls-options
+#  tls:
+#    hosts:
+#      - sips-dashboard.andes.gob.ar
+#    passthrough: false
+#    options:
+#      name: dashboard-tls-options
 

@@ -13,7 +13,7 @@ metadata:
   name: dashboard-migration-sips-be-https
 spec:
   entryPoints:
-    - websecure
+    - web
   routes:
   - match: Host(`{{ .Values.backend.domain }}`)
     kind: Rule
@@ -22,10 +22,10 @@ spec:
       port: 3000
     middlewares:
     - name: dashboard-migration-sips-be-compress
-  tls:
-    hosts:
-      - sips-dashboard-app.andes.gob.ar
-    passthrough: false
-    options:
-      name: dashboard-tls-options
+#  tls:
+#    hosts:
+#      - sips-dashboard-app.andes.gob.ar
+#    passthrough: false
+#    options:
+#      name: dashboard-tls-options
 
