@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard-migration-sips-fe
+  labels:
+    app: dashboard-migration-sips-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: dashboard-migration-sips-fe
+  template:
+    metadata:
+      labels:
+        name: dashboard-migration-sips-fe
+        app: dashboard-migration-sips-fe
+    spec:
+      containers:
+        - name: dashboard-migration-sips-fe
+          image: "orlandobrea/andes-sips-dashboard-fe"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+          volumeMounts:
+          - name: config-files
+            mountPath: /usr/share/nginx/html/assets/settings.json
+            subPath: settings.json
+            readOnly: true
+      volumes:
+        - name: config-files
+          configMap:
+            name: "dashboard-sips-fe"
+
