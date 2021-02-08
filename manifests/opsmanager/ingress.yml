@@ -1,0 +1,26 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: ops-manager-compress
+  namespace: mongodb
+spec:
+  compress: {}
+---
+# HTTPS
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-ops-manager
+  namespace: mongodb
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`$DOMAIN`)
+    kind: Rule
+    middlewares:
+      - name: ops-manager-compress
+    services:
+    - name: ops-manager-svc-ext
+      port: 8080 
