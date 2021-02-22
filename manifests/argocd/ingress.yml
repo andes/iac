@@ -1,0 +1,40 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: argocd-compress
+  namespace: argocd
+spec:
+  compress: {}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: argocd-tls-options
+spec:
+  minVersion: VersionTLS12
+  sniStrict: false
+---
+# HTTPS
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-argocd
+  namespace: argocd
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`$DOMAIN`)
+    kind: Rule
+    middlewares:
+      - name: argocd-compress
+    services:
+    - name: argocd-server
+      port: 443
+  tls:
+    hosts:
+      - $DOMAIN
+    passthrough: false
+    options:
+      name: argocd-tls-options
