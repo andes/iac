@@ -1,0 +1,39 @@
+questions:
+- variable: backend.domain
+  default: ""
+  description: "Dominio del backend"
+  type: string
+  label: "Dominio a utilizar"
+  group: "Backend"
+
+- variable: frontend.domain
+  default: ""
+  description: "Dominio del frontend"
+  type: string
+  label: "Dominio a utilizar"
+  group: "Frontend"
+
+- variable: database.username
+  default: "sa"
+  description: "Usuario de la base de datos"
+  type: string
+  label: "Usuario"
+  group: "Base de datos"
+- variable: database.password
+  default: "sa"
+  description: "Password de la base de datos"
+  type: string
+  label: "Password"
+  group: "Base de datos"
+- variable: database.server
+  default: ""
+  description: "Servidor de base de datos (IP/dominio)"
+  type: string
+  label: "Servidor"
+  group: "Base de datos"
+- variable: database.db
+  default: "SIPS"
+  description: "DB a utilizar"
+  type: string
+  label: "DB"
+  group: "Base de datos"

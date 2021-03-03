@@ -1,0 +1,30 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: dashboard-tls-options
+spec:
+  minVersion: VersionTLS12
+  sniStrict: false
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard-migration-sips-fe-https
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`{{ .Values.frontend.domain }}`)
+    kind: Rule
+    services:
+    - name: dashboard-migration-sips-fe 
+      port: 80
+#  tls:
+#    hosts:
+#      - sips-dashboard.andes.gob.ar
+#    passthrough: false
+#    options:
+#      name: dashboard-tls-options
+

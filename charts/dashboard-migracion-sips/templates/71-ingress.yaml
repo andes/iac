@@ -1,0 +1,31 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: dashboard-migration-sips-be-compress
+spec:
+  compress: {}
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard-migration-sips-be-https
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`{{ .Values.backend.domain }}`)
+    kind: Rule
+    services:
+    - name: dashboard-migration-sips-be 
+      port: 3000
+    middlewares:
+    - name: dashboard-migration-sips-be-compress
+#  tls:
+#    hosts:
+#      - sips-dashboard-app.andes.gob.ar
+#    passthrough: false
+#    options:
+#      name: dashboard-tls-options
+
