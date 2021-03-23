@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: test-replica-configmap
+    namespace: $NAMESPACE
+data:
+    baseUrl: $MONGO_BASE_URL
+    projectName: $PROJECT_NAME
+    orgId: $ORG_ID

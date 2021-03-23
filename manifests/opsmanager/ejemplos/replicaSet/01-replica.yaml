@@ -1,0 +1,14 @@
+---
+apiVersion: mongodb.com/v1
+kind: MongoDB
+metadata:
+    name: test-replica-kubernetes
+spec:
+    type: ReplicaSet
+    persistent: true
+    members: 3
+    version: "4.2.2-ent"
+    opsManager:
+        configMapRef:
+            name: test-replica-configmap
+    credentials: test-secret-mongo
