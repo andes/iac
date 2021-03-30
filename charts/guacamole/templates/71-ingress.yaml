@@ -15,7 +15,7 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`{{ .Values.backend.domain }}`)
+  - match: Host(`{{ .Values.guacamole.domain }}`)
     kind: Rule
     services:
     - name: guacamole
