@@ -1,0 +1,7 @@
+guacamole:
+    domain: guacamole.andes.gob.ar
+database:
+  username: 
+  password:
+  storageClassName:
+  storageSize:

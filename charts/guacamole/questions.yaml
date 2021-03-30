@@ -1,0 +1,32 @@
+questions:
+- variable: guacamole.domain
+  default: "guacamole.andes.gob.ar"
+  description: "URL de Guacamole"
+  type: string
+  label: "Dominio"
+  group: "Guacamole"
+
+- variable: database.username
+  default: "guacamole"
+  description: "Usuario de la base de datos"
+  type: string
+  label: "Usuario"
+  group: "Base de datos"
+- variable: database.password
+  default: "guacamole"
+  description: "Password de la base de datos"
+  type: string
+  label: "Password"
+  group: "Base de datos"
+- variable: database.storageClassName
+  default: ""
+  description: "StorageClass a utilizar para solicitar volumenes"
+  type: storageclass
+  label: "Storage Class"
+  group: "Persistencia"
+- variable: database.storageSize
+  default: "5Gi"
+  description: "Tamaño del volumen de Postgres"
+  type: string
+  label: "Tamaño del disco"
+  group: "Base de datos"
