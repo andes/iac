@@ -5,7 +5,14 @@ metadata:
   name: guacamole-compress
 spec:
   compress: {}
-
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: guacamole-addprefix
+spec:
+  addPrefix:
+    prefix: /guacamole
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -22,6 +29,7 @@ spec:
       port: 8080
     middlewares:
     - name: guacamole-compress
+    - name: guacamole-addprefix
 #  tls:
 #    hosts:
 #      - sips-dashboard-app.andes.gob.ar
