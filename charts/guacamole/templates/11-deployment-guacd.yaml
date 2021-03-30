@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guacd
+  labels:
+    app: guacd  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: guacd  
+  template:
+    metadata:
+      labels:
+        name: guacd  
+        app: guacd  
+    spec:
+      containers:
+        - name: guacd  
+          image: "guacamole/guacd:1.3.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4822
+              protocol: TCP
