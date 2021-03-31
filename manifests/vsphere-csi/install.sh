@@ -8,6 +8,10 @@ fi
 
 cp $1 csi-vsphere.conf
 
+# Label first node
+FIRST_NODE=$(kubectl get nodes -o json | jq '.items[0].metadata.name' | tr -d '"')
+kubectl label nodes $FIRST_NODE node-role.kubernetes.io/master=""
+
 kubectl create secret generic vsphere-config-secret --from-file=csi-vsphere.conf --namespace kube-system
 
 
