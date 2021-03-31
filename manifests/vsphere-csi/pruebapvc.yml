@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pruebapvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prueba-csi-pvc
+  namespace: pruebapvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: csi-sc
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox1
+  namespace: pruebapvc
+  labels:
+    app: busybox1
+spec:
+  containers:
+  - image: busybox
+    command:
+      - sleep
+      - "7200"
+    imagePullPolicy: IfNotPresent
+    name: busybox
+    volumeMounts:
+      - mountPath: "/home"
+        name: pvc0001
+  - image: ubuntu:bionic
+    name: fsfreeze
+    securityContext:
+      privileged: true
+    volumeMounts:
+      - mountPath: "/home"
+        name: pvc0001
+        readOnly: false
+    command:
+      - "/bin/bash"
+      - "-c"
+      - "sleep infinity"
+  restartPolicy: Always
+  volumes:
+    - name: pvc0001
+      persistentVolumeClaim:
+        claimName: prueba-csi-pvc
