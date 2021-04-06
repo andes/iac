@@ -1,0 +1,9 @@
+backend:
+  domain: back.192-168-0-1.nip.io
+frontend:
+  domain: front.192-168-0-1.nip.io
+database:
+  username: 
+  password:
+  server: 10.1.62.53
+  db: SIPS

@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guacamole-postgresql
+  labels:
+    app: guacamole-postgresql  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: guacamole-postgresql  
+  template:
+    metadata:
+      labels:
+        name: guacamole-postgresql  
+        app: guacamole-postgresql  
+    spec:
+      containers:
+        - name: guacamole-postgresql  
+          image: "postgres:12.6"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          env:
+            - name: POSTGRES_USER 
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-postgresql
+                  key: username                     
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-postgresql
+                  key: password                     
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+              subPath: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: guacamole-postgresql-pvc

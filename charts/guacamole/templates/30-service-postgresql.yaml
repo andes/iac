@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: guacamole-postgresql
+  labels:
+    name: guacamole-postgresql  
+    app: guacamole-postgresql  
+spec:
+  type: ClusterIP
+  ports: 
+    - name: web
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    app: guacamole-postgresql  
+

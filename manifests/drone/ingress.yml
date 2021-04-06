@@ -1,0 +1,26 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: drone-compress
+  namespace: $NAMESPACE
+spec:
+  compress: {}
+---
+# HTTPS
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-drone
+  namespace: $NAMESPACE
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`$DOMAIN`)
+    kind: Rule
+    middlewares:
+      - name: drone-compress
+    services:
+    - name: drone
+      port: 80

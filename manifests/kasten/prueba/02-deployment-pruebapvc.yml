@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-pvc 
+  labels:
+    app: test-pvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-pvc
+  template:
+    metadata:
+      labels:
+        app: test-pvc
+    spec:
+      containers:
+      - name: test-pvc
+        image: busybox 
+        imagePullPolicy: IfNotPresent
+        command:
+        - sleep
+        - "7200"
+        volumeMounts:
+          - mountPath: "/home"
+            name: pvc0001  
+      restartPolicy: Always
+      volumes:
+        - name: pvc0001
+          persistentVolumeClaim:
+            claimName: kuberneteando
+

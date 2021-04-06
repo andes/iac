@@ -1,0 +1,26 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: kasten-compress
+  namespace: kasten-io
+spec:
+  compress: {}
+---
+# HTTP
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-kasten
+  namespace: kasten-io
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`$DOMAIN`)
+    kind: Rule
+    middlewares:
+      - name: kasten-compress
+    services:
+    - name: gateway
+      port: 8000

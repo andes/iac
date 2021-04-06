@@ -1,0 +1,15 @@
+[Global]
+cluster-id = "<nombre del cluster>"
+
+[NetPermissions "A"]
+ips = "*"
+permissions = "READ_WRITE"
+rootsquash = false
+
+
+[VirtualCenter "<url del DC>"]
+insecure-flag = "true"
+user = "<vcenter user>"
+password = "<vcenter password>"
+port = "443"
+datacenters = "/HospitalNeuquen"
