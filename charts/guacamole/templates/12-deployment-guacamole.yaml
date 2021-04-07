@@ -30,7 +30,8 @@ spec:
               value: guacamole-postgresql
             - name: GUACD_HOSTNAME
               value: guacd
-
+            - name: GUACD_PORT
+              value: 4822
             - name: POSTGRES_USER 
               valueFrom:
                 secretKeyRef:
