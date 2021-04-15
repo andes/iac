@@ -2,7 +2,7 @@ env:
   ## REQUIRED: Set the user-visible Drone hostname, sans protocol.
   ## Ref: https://docs.drone.io/installation/reference/drone-server-host/
   ##
-  DRONE_SERVER_HOST: drone.192-168-68-42.nip.io:30443
+  DRONE_SERVER_HOST: $DOMAIN:30443
   ## The protocol to pair with the value in DRONE_SERVER_HOST (http or https).
   ## Ref: https://docs.drone.io/installation/reference/drone-server-proto/
   ##
@@ -12,8 +12,8 @@ env:
   ## key via a separately provisioned secret (see existingSecretName above).
   ## Ref: https://docs.drone.io/installation/reference/drone-rpc-secret/
   ##
-  DRONE_RPC_SECRET: randomly-generated-secret-here
+  DRONE_RPC_SECRET: $SECRET 
   ## GitHub provider configuration.
   ## Ref: https://docs.drone.io/installation/providers/github/
-  DRONE_GITHUB_CLIENT_ID: fb7c7cd0d0fa825d6b7b
-  DRONE_GITHUB_CLIENT_SECRET: d87ceac73c459241dc8de2b4bd5454ad5d632ac3
+  DRONE_GITHUB_CLIENT_ID: $GITHUB_CLIENT_ID
+  DRONE_GITHUB_CLIENT_SECRET: $GITHUB_CLIENT_SECRET
