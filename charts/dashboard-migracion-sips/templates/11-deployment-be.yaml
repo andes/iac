@@ -25,12 +25,12 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 3000
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 3000
           env:
             - name: DB_SERVER
