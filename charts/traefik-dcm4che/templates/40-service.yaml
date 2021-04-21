@@ -113,3 +113,20 @@ spec:
       port: 11112
       targetPort: 11112
       nodePort: {{ .Values.ports.nema }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefikRabbitMQ
+spec:
+  type: NodePort
+  selector:
+    app: traefik
+  ports:
+    - protocol: TCP
+      name: hl7
+      port: 5672
+      targetPort: 5672
+      nodePort: {{ .Values.ports.rabbitmq }}
+

@@ -29,6 +29,8 @@ data:
         address: ":2762"
       nema:
         address: ":11112"        
+      rabbitmq:
+        address: ":5672"        
     providers:
       providersThrottleDuration: 10s
 

@@ -11,6 +11,7 @@ ports:
   hl7udp: 32576
   dicom: 32762
   nema: 32112
+  rabbitmq: 32672
 
 
 tls:
@@ -77,6 +78,9 @@ service:
       protocol: UDP      
     - name: nema
       number: 11112
+      protocol: TCP           
+    - name: rabbitmq
+      number: 5672
       protocol: TCP           
     # - name: other
       # number: 12575

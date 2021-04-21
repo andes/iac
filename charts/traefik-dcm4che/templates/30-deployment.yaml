@@ -84,7 +84,8 @@ spec:
               containerPort: 2762
             - name: nema
               containerPort: 11112   
-
+            - name: rabbitmq
+              containerPort: 5672   
           volumeMounts:
           {{- if .Values.tls.custom_cert }}
             - name: certificates
