@@ -125,7 +125,7 @@ spec:
     app: traefik
   ports:
     - protocol: TCP
-      name: hl7
+      name: rabbitmq
       port: 5672
       targetPort: 5672
       nodePort: {{ .Values.ports.rabbitmq }}
