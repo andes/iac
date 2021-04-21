@@ -6,6 +6,6 @@ metadata:
 data:
   settings.json: |+
     {
-      "server": "https://{{ .Values.backend.domain }}:30443"
+      "server": "https://{{ .Values.backend.domain }}/api"
     }
 
