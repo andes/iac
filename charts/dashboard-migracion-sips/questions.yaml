@@ -1,9 +1,9 @@
 questions:
-- variable: backend.domain
+- variable: backend.endpoint
   default: ""
-  description: "Dominio del backend"
+  description: "Endpoint para conectarse al backend (Ej: /api)"
   type: string
-  label: "Dominio a utilizar"
+  label: "Endpoint del backend"
   group: "Backend"
 
 - variable: frontend.domain

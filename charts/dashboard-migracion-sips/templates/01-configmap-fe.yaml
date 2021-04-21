@@ -6,6 +6,6 @@ metadata:
 data:
   settings.json: |+
     {
-      "server": "https://{{ .Values.backend.domain }}/api"
+      "server": "{{ .Values.backend.endpoint }}"
     }
 

@@ -15,7 +15,7 @@ spec:
   entryPoints:
     - web
   routes:
-  - match: Host(`{{ .Values.backend.domain }}`) && PathPrefix(`/api`)  
+  - match: Host(`{{ .Values.frontend.domain }}`) && PathPrefix(`{{ .Values.backend.endpoint }}`)  
     kind: Rule
     services:
     - name: dashboard-migration-sips-be 

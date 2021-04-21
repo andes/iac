@@ -1,5 +1,5 @@
 backend:
-  domain: back.192-168-0-1.nip.io
+  endpoint: /api
 frontend:
   domain: front.192-168-0-1.nip.io
 database:
