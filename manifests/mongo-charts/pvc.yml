@@ -1,0 +1,26 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    name: pvc-charts-mongo
+    namespace: $NAMESPACE
+spec:
+    storageClassName: csi-sc
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 50m
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    name: pvc-charts-mongo-config
+    namespace: $NAMESPACE
+spec:
+    storageClassName: csi-sc
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 50m
+

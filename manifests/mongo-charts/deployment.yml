@@ -1,0 +1,84 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: mongodb-charts
+    namespace: $NAMESPACE
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+          app: deploy-charts
+    template:
+        metadata:
+            labels: 
+              app: deploy-charts
+        spec:
+            initContainers:
+                - name: init-myservice
+                  image: busybox:1.28
+                  # Copy stitch-config-base.json to stitch-config.json only if doesn't exists on dest folder
+                  command: ['sh', '-c', "cp /mongodb-charts/volumes/keys/last.app.original.json /mongodb-charts/volumes/keys/last.app.json > /dev/null"]
+                  volumeMounts:
+                      - name: disco
+                        mountPath: /mongodb-charts/volumes/keys
+                      - name: mongodb-charts-keys
+                        mountPath: /mongodb-charts/volumes/keys/last.app.original.json
+                        subPath: last.app.json
+            containers:
+                - name: mongodb-charts
+                  image: quay.io/mongodb/charts:19.12.1
+                  ports:
+                     - containerPort: 80
+                     - containerPort: 443
+                     - containerPort: 8080
+                  volumeMounts:
+                      - name: disco
+                        mountPath: /mongodb-charts/volumes/keys
+                      - name: disco-config
+                        mountPath: /mongodb-charts/config
+                      - name: mongodb-charts-keys
+                        mountPath: /mongodb-charts/volumes/keys/charts-tokens.json
+                        subPath: charts-tokens.json
+                      - name: mongodb-charts-keys
+                        mountPath: /mongodb-charts/volumes/keys/last.app.original.json
+                        subPath: last.app.json
+                      - name: mongodb-charts-keys
+                        mountPath: /mongodb-charts/volumes/keys/mongodb-charts.key
+                        subPath: mongodb-charts.key
+                      - name: mongodb-charts-config
+                        mountPath: /mongodb-charts/config/stitch-config.template.json
+                        subPath: stitch-config.template.json
+                      - name: mongodb-charts-certs
+                        mountPath: /mongodb-charts/volumes/web-certs
+                  startupProbe:
+                      httpGet:
+                            path: /
+                            scheme: HTTP
+                            port: 8080
+                  livenessProbe:
+                      httpGet:
+                            path: /
+                            scheme: HTTP
+                            port: 8080
+                  env:
+                      - name: CHARTS_MONGODB_URI
+                        valueFrom:
+                            secretKeyRef:
+                                name: mongodb-charts-uri
+                                key: CHARTS_MONGODB_URI
+            volumes:
+                - name: mongodb-charts-certs
+                  secret:
+                      secretName: mongodb-charts-certs
+                - name: mongodb-charts-keys
+                  secret:
+                      secretName: mongodb-charts-keys
+                - name: mongodb-charts-config
+                  configMap:
+                    name: mongodb-charts-config
+                - name: disco
+                  persistentVolumeClaim:
+                      claimName: pvc-charts-mongo
+                - name: disco-config
+                  persistentVolumeClaim:
+                      claimName: pvc-charts-mongo-config

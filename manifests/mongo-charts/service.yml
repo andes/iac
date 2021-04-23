@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+    name: svc-mongo-charts
+    namespace: $NAMESPACE
+spec:
+    selector:
+        app: deploy-charts
+    ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 80

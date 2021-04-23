@@ -1,0 +1,40 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: mongodb-charts-compress
+  namespace: $NAMESPACE
+spec:
+  compress: {}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: mongo-charts-tls-options
+spec:
+  minVersion: VersionTLS12
+  sniStrict: false
+---
+# HTTPS
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-mongodb-charts
+  namespace: $NAMESPACE
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`$DOMAIN`)
+    kind: Rule
+    middlewares:
+      - name: mongodb-charts-compress
+    services:
+    - name: svc-mongo-charts
+      port: 80
+  tls:
+    hosts:
+      - $DOMAIN
+    passthrough: false
+    options:
+      name: mongo-charts-tls-options
