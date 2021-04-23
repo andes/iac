@@ -9,17 +9,11 @@ function parseDiskContent(content) {
   return content
     .replaceAll('\t', ' ')
     .split('\n')
-    .filter((line) => line != '')
-    .map((line, idx) => {
-      const parsedLine = line.match(/(\S+)\s+(\S+)\s+(\S+)/);
-      if (parsedLine && parsedLine.length > 1) {
-        const [_, id, vvol, disk] = parsedLine;
-        return {
-          id,
-          vvol,
-          disk,
-        };
-      }
+    .filter((line, idx) => line != '' && idx > 0)
+    .map((line) => {
+      const [fullId, disk] = line.split(',');
+      const [_, id] = fullId.split(':');
+      return { id, disk };
     });
 }
 
@@ -97,37 +91,42 @@ function changeToNextContext() {
 }
 
 function getDiskIdFromVCenterDisks(item) {
-  console.log('vcenter', item.id);
   return item.id;
 }
 function getDiskIdFromKubernetesDisks(item) {
-  console.log('kubernetes', item);
   return item;
+}
+function not(comparison) {
+  return !comparison;
+}
+
+function exportMissingDisksToFile(fileName, missingDisks) {
+  const fileContent = missingDisks.map((disk) => `${disk.disk}`).join('\n');
+  fs.writeFileSync(fileName, fileContent, 'utf-8');
 }
 
 function findMissingItemsInSource(compareFunction, source, itemsToCheck) {
-  return source.reduce(
-    (missingItems, currentItem) =>
-      missingItems.concat(
-        itemsToCheck.find((currentItemToCheck) => compareFunction(currentItem, currentItemToCheck)) ? [] : currentItem,
-      ),
-    [],
+  return source.filter((sourceItem) =>
+    itemsToCheck.find((currentItemToCheck) => not(compareFunction(sourceItem, currentItemToCheck))),
   );
 }
 
 (async () => {
-  const fileDisks = parseDiskContent(loadVmWareDisks('disks.txt'));
-  // console.log(fileDisks);
+  const fileDisks = parseDiskContent(loadVmWareDisks('discos_vcenter_4_9_21.csv'));
   let pvcList = [];
   const changeContext = changeToNextContext();
   while (await changeContext()) {
     const list = await generateDiskIdsFromKubernetes();
     if (list && list.length > 0) pvcList = [...pvcList, ...list];
   }
+  // console.log(fileDisks)
+  // console.log(pvcList);
   const isInKubernetes = (vcenterDisk, kubernetesDisk) =>
     getDiskIdFromVCenterDisks(vcenterDisk) == getDiskIdFromKubernetesDisks(kubernetesDisk);
-  const missingItemsInKubernetes = findMissingItemsInSource(isInKubernetes, fileDisks, pvcList);
+  const missingDisks = findMissingItemsInSource(isInKubernetes, fileDisks, pvcList);
   // console.log('Todos los PV son', pvcList);
-  console.log('Discos que estan en VCenter y NO en Kubernetes', missingItemsInKubernetes);
+  exportMissingDisksToFile('discos_no_usados_en_k8s.csv', missingDisks);
+  console.log(
+    `Se encontraron ${missingDisks.length} discos que no estan en Kubernetes. El listado completo se encuentra en el archivo 'discos_no_usados_en_k8s.csv'`,
+  );
 })();
-// const diskList = parseDiskContent(loadVmWareDisks('disks.txt'));
