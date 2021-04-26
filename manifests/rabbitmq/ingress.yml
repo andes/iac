@@ -1,0 +1,33 @@
+# HTTPS
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-rabbitmq-http
+  namespace: $NAMESPACE
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`$DOMAIN`)
+    kind: Rule
+    services:
+    - name: rabbitmq
+      port: 15672
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: ingress-rabbitmq-tcp
+  namespace: $NAMESPACE
+spec:
+  entryPoints:
+    - rabbitmq
+  routes:
+  - match: HostSNI(`*`)
+    kind: Rule
+    services:
+    - name: rabbitmq
+      port: 5672
+      scheme: tcp
+
