@@ -1,5 +1,8 @@
 backend:
   endpoint: /api
+  prtg_server: 
+  prtg_username:
+  prtg_password_hash:
 frontend:
   domain: front.192-168-0-1.nip.io
 database:
@@ -7,3 +10,4 @@ database:
   password:
   server: 10.1.62.53
   db: SIPS
+

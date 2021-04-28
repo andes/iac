@@ -35,6 +35,12 @@ spec:
           env:
             - name: DB_SERVER
               value: {{ .Values.database.server }}
+            - name: PRTG_SERVER
+              value: {{ .Values.backend.prtg_server }}
+            - name: PRTG_USERNAME
+              value: {{ .Values.backend.prtg_username }}
+            - name: PRTG_PASSWORD_HASH
+              value: {{ .Values.backend.prtg_password_hash }}
             - name: DB_DATABASE 
               value: {{ .Values.database.db }}
             - name: DB_USER 

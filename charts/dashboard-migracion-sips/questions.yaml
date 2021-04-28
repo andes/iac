@@ -6,6 +6,27 @@ questions:
   label: "Endpoint del backend"
   group: "Backend"
 
+- variable: backend.prtg_server
+  default: ""
+  description: "Servidor de PRTG (http://xxxx)"
+  type: string
+  label: "Servidor de PRTG"
+  group: "Backend"
+
+- variable: backend.prtg_username
+  default: ""
+  description: "Usuario del servidor PRTG"
+  type: string
+  label: "Usuario de PRTG"
+  group: "Backend"
+
+- variable: backend.prtg_password_hash
+  default: ""
+  description: "Password hash del servidor PRTG"
+  type: string
+  label: "Password hash de PRTG"
+  group: "Backend"
+
 - variable: frontend.domain
   default: ""
   description: "Dominio del frontend"
