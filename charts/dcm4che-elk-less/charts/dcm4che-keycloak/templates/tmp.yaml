@@ -1,0 +1,13 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dcm4che-keycloak-data
+  namespace: dcm4che
+spec:
+  storageClassName: csi-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi 

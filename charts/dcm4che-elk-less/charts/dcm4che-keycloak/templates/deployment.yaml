@@ -1,0 +1,122 @@
+{{- $fullName := include "dcm4che-keycloak.fullname" . -}}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "dcm4che-keycloak.fullname" . }}
+  labels:
+    {{- include "dcm4che-keycloak.labels" . | nindent 4 }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: localhost/default.json
+spec:
+  replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "dcm4che-keycloak.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "dcm4che-keycloak.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "dcm4che-keycloak.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            {{- range $port :=  .Values.service.ports }}
+            - containerPort: {{ $port.number }}
+              protocol: {{ $port.protocol }}
+            {{- end}}  
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/bash", "-c", "/postStart.sh"]            
+          livenessProbe:
+            httpGet:
+              path: /
+              scheme: HTTPS
+              port: 8843
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              scheme: HTTPS
+              port: 8843
+          env:
+            {{- range $key, $val := .Values.env_vars }}
+            - name: {{ $key }}
+              value: {{ $val | quote}}
+            {{- end}}
+            - name: GLOBAL_DOMAIN
+              value: {{ $.Values.global.domain }}    
+            - name: KEYCLOAK_USER
+              value: {{ $.Values.global.keycloak_user }}
+            - name: KEYCLOAK_PASSWORD
+              value: {{ $.Values.global.keycloak_password }}
+            - name: KEYCLOAK_REGULAR_USER
+              value: {{ $.Values.global.keycloak_regular_user }}
+            - name: KEYCLOAK_REGULAR_PASSWORD
+              value: {{ $.Values.global.keycloak_regular_password }}
+            # - name: KEYCLOAK_API_USER
+            #   value: {{ $.Values.global.keycloak_api_user }}
+            # - name: KEYCLOAK_API_PASSWORD
+            #   value: {{ $.Values.global.keycloak_api_password }}
+            - name: ANDES_SECRET
+              value: {{ $.Values.global.andes_keycloak_secret }}            
+            - name: KIBANA_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-kibana-client-secret
+                  key: secret                     
+          volumeMounts:
+          - name: vm-localtime
+            mountPath: /etc/localtime            
+          - name: vm-timezone
+            mountPath: /etc/timezone 
+          - name: data
+            mountPath: /opt/keycloak/standalone  
+          # - name: keycloak-certs
+            # mountPath: /opt/certs/keycloak
+            # readOnly: true                      
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}          
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+        - name: vm-localtime
+          hostPath:
+            path: /etc/localtime  
+        - name: vm-timezone
+          hostPath:
+            path: /etc/timezone  
+        # - name: keycloak-certs
+          # secret:
+            # secretName: {{ .Values.global.prefix}}-keycloak-cert            
+        - name: {{ .Values.volume.name }}
+          {{ if eq $.Values.global.persistence.type "PVC" }}
+          persistentVolumeClaim:
+            claimName: {{ $fullName }}-{{ .Values.volume.name }}
+          {{ end }}
+          {{ if eq $.Values.global.persistence.type "PATH" }}
+          hostPath:
+            path: {{ $.Values.global.persistence.path }}{{ .Values.volume.path }}
+            type: DirectoryOrCreate
+          {{ end }}

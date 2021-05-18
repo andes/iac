@@ -1,0 +1,70 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: slapd-init-configmap
+data:
+  mwl.ldif: |+
+      version: 1
+      dn: dicomDeviceName=dcm4chee-arc,cn=Devices,cn=DICOM Configuration,dc=dcm4che,dc=org
+      changetype: modify
+      add: hl7PSUMWL
+      hl7PSUMWL: TRUE
+
+      dn: dicomDeviceName=dcm4chee-arc,cn=Devices,cn=DICOM Configuration,dc=dcm4che,dc=org
+      changetype: modify
+      add: hl7PSUDelay
+      hl7PSUDelay: PT1M
+
+      dn: dicomDeviceName=dcm4chee-arc,cn=Devices,cn=DICOM Configuration,dc=dcm4che,dc=org
+      changetype: modify
+      add: hl7PSUTaskPollingInterval
+      hl7PSUTaskPollingInterval: PT1M
+      
+      dn: dicomDeviceName=dcm4chee-arc,cn=Devices,cn=DICOM Configuration,dc=dcm4che,dc=org
+      changetype: modify
+      add: hl7PSUTaskFetchSize
+      hl7PSUTaskFetchSize: 500
+
+      dn: dicomDeviceName=dcm4chee-arc,cn=Devices,cn=DICOM Configuration,dc=dcm4che,dc=org
+      changetype: modify
+      delete: dcmHideSPSWithStatusFromMWL
+      dcmHideSPSWithStatusFromMWL: COMPLETED     
+        
+  postStart.sh: |+
+      #!/bin/sh
+      #set -e
+      FILE=/tmp/SLAPD_IMPORTED
+      if test -f "$FILE"; then
+        echo "No tengo nada que hacer -> ya se corrio este script"
+        exit 0;
+      fi
+
+      POLL_INTERVAL=5
+      LDAP_DOWN_STATUS_CODE=255
+      STARTED=0
+
+      echo "Verificando si LDAP esta iniciado"
+      while [ $STARTED != 1 ]
+      do
+          ldapsearch -x -H ldap://
+          ldapResponse=$?
+          if [ $ldapResponse -eq $LDAP_DOWN_STATUS_CODE ]; then
+              echo "LDAP: down"
+          else
+              echo "LDAP: up"
+              STARTED=1
+          fi
+          sleep $POLL_INTERVAL
+      done
+
+
+      PASSWORD="${LDAP_ROOTPASS:-secret}"
+      toRun="ldapmodify -x -D cn=admin,"$LDAP_BASE_DN" -w "$PASSWORD" -H ldap:// -f /init/mwl.ldif"
+      echo $toRun
+      $toRun
+
+      if [ $? -eq 0]; then
+          touch $FILE
+      fi
+

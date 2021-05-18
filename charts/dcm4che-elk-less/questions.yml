@@ -1,0 +1,145 @@
+questions:
+- variable: global.domain
+  default: ""
+  description: "Dominio en el cual va a correr la app (ej: hospi01.andes.gob.ar)"
+  type: string
+  label: "Dominio a utilizar"
+  group: "General"
+
+- variable: global.ae_title
+  default: "DCM4CHEE"
+  description: "Application Entity Title"
+  type: string
+  label: "AE Title"
+  group: "General"
+
+- variable: global.andes_keycloak_secret
+  default: ""
+  description: "Andes Keycloak Secret"
+  type: string
+  label: "Andes Keykloak Secret"
+  group: "Seguridad"  
+
+- variable: global.keycloak_user
+  default: "admin"
+  description: "Keycloak admin user"
+  type: string
+  label: "Keycloak user"
+  group: "Seguridad"
+
+- variable: global.keycloak_password
+  default: "admin"
+  description: "Keycloak admin pasword"
+  type: string
+  label: "Keycloak password"
+  group: "Seguridad"
+  
+
+- variable: global.keycloak_regular_user
+  default: "user"
+  description: "Viewer usuario"
+  type: string
+  label: "Usuario regular de Keycloak"
+  group: "Seguridad"
+
+- variable: global.keycloak_regular_password
+  default: "user123"
+  description: "Viewer password"
+  type: string
+  label: "Password de usuario regular de Keycloak"
+  group: "Seguridad"
+
+- variable: global.postgres_admin_password
+  default: "postgres123"
+  description: "Password administrador de Postgres"
+  type: string
+  label: "Password administrador de Postgres"
+  group: "Seguridad"
+
+- variable: global.https_port
+  default: "30443"
+  description: "Puerto HTTPS"
+  type: string
+  label: "HTTPS port"
+  group: "General"
+
+  
+
+- variable: global.persistence.type
+  default: "PVC"
+  description: "Tipo de persistencia"
+  type: enum
+  options:
+    - "PVC"
+  label: "Tipo de persistencia a utilizar (volume claim / path en el nodo)"
+  group: "Persistencia"
+
+  
+- variable: global.persistence.storageClass
+  default: ""
+  description: "StorageClass a utilizar para solicitar volumenes (solo si habilito PVC)"
+  type: storageclass
+  label: "Storage Class"
+  group: "Persistencia"
+  show_if: "global.persistence.type=PVC"
+
+  # Keycloak
+- variable: dcm4che-keycloak.volume.size
+  default: "10Gi"
+  description: "Tamaño del volumen de Keycloak"
+  type: string
+  show_if: "global.persistence.type=PVC"
+  label: "Tamaño del volumen de Keycloak"
+  group: "Persistencia"
+
+  # Postgres
+- variable: dcm4che-postgres.volume.size
+  default: "10Gi"
+  description: "Tamaño del volumen de Postgres"
+  type: string
+  show_if: "global.persistence.type=PVC"
+  label: "Tamaño del volumen de Postgres"
+  group: "Persistencia"
+
+  # LDAP
+- variable: dcm4che-ldap.volume_ldap.size
+  default: "10Gi"
+  description: "Tamaño del volumen de LDAP"
+  type: string
+  show_if: "global.persistence.type=PVC"
+  label: "Tamaño del volumen de LDAP"
+  group: "Persistencia"  
+
+
+  # SLAPD
+- variable: dcm4che-ldap.volume_slapd.size
+  default: "10Gi"
+  description: "Tamaño del volumen de SLAPD"
+  type: string
+  show_if: "global.persistence.type=PVC"
+  label: "Tamaño del volumen de SLAPD"
+  group: "Persistencia"
+
+  # PACS
+- variable: dcm4che-pacs.volume.size
+  default: "10Gi"
+  description: "Tamaño del volumen de PACS"
+  type: string
+  show_if: "global.persistence.type=PVC"
+  label: "Tamaño del volumen de PACS"
+  group: "Persistencia"
+
+- variable: global.tls.custom_cert
+  default: "false"
+  description: "El ingress usa certificados de let's encrypt"
+  type: boolean
+  label: "Usa certificados de Let's Encrypt en ingress?"
+  group: "Certificados"
+  show_subquestion_if: true
+  subquestions:  
+  - variable: global.tls.ca
+    default: ""
+    description: "Certificado ca.crt en formato Base64"
+    type: multiline
+    label: "Certificado (ca.crt)"
+    group: "Certificados"
