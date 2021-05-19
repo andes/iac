@@ -49,17 +49,17 @@ spec:
             - containerPort: {{ $port.number }}
               protocol: {{ $port.protocol }}
             {{- end}}  
-          livenessProbe:
-            httpGet:
-              path: /
-              scheme: HTTPS
-              port: 8443 
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /
-              scheme: HTTPS
-              port: 8443
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     scheme: HTTPS
+          #     port: 8443 
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     scheme: HTTPS
+          #     port: 8443
           env:
             {{- range $key, $val := .Values.env_vars }}
             - name: {{ $key }}
