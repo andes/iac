@@ -1,6 +1,6 @@
 # image: andesnqn/dcm4chee-arc-psql
 
-FROM dcm4che/dcm4chee-arc-psql:5.23.2-secure
+FROM dcm4che/dcm4chee-arc-psql:5.23.3-secure
 
 # Agrega el cert de keycloak al store de java
 COPY load-hook.sh /load-hook.sh
