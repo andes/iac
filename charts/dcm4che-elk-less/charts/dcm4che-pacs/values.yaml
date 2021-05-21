@@ -84,7 +84,7 @@ env_vars:
   MANAGEMENT_HTTPS_PORT: 9993
   SSL_REQUIRED: all
   ALLOW_ANY_HOSTNAME: true
-  WILDFLY_WAIT_FOR: "dcm4che-slapd:389 dcm4che-postgres:5432 dcm4che-keycloak-0:8880"
+  WILDFLY_WAIT_FOR: "dcm4che-slapd:389 dcm4che-postgres:5432 dcm4che-keycloak:8880"
   WILDFLY_CHOWN: "/opt/wildfly/standalone /storage"
 
 volume:
