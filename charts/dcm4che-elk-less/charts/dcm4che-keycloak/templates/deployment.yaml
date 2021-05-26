@@ -38,7 +38,7 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/bash", "-c", "/postStart.sh > /startup.log"]
+                command: ["/bin/bash", "-c", "/postStart.sh > /startup.log 2>&1"]
           livenessProbe:
             httpGet:
               path: /
