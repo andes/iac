@@ -5,6 +5,8 @@
 # File to check if this script was already run - Remove this file to run this script again
 FILE=/opt/keycloak/standalone/configuration/CLIENTS_IMPORTED
 
+echo "New file test .3 "
+
 echo "Step 1"
 REALM=dcm4che
 
