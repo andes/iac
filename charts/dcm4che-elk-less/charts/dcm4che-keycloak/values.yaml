@@ -59,7 +59,6 @@ env_vars:
   MANAGEMENT_HTTPS_PORT: 8993
   KEYCLOAK_WAIT_FOR: "dcm4che-slapd:389"
   LDAP_URL: ldap://dcm4che-slapd:389
-  REALM: dcm4che
   #KEYCLOAK_USER: admin
   #KEYCLOAK_PASSWORD: admin
 

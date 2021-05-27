@@ -8,7 +8,6 @@ FILE=/opt/keycloak/standalone/configuration/CLIENTS_IMPORTED
 echo "New file test .3 "
 
 echo "Step 1"
-REALM=dcm4che
 
 if test -f "$FILE"; then
     echo "Nothing to do - already run before"
@@ -32,14 +31,14 @@ done
 echo "Step 4"
 echo "Adding custom clients"
 
-
-
+REALM=master
 # Login with keycloak client
 #/opt/keycloak/bin/kcadm.sh config credentials --server http://$(hostname -i):8880/auth --realm dcm4che --user $KEYCLOAK_USER --password $KEYCLOAK_PASSWORD
 /opt/keycloak/bin/kcadm.sh config credentials --server http://$(hostname -i):8880/auth --realm $REALM --user admin --password admin
 echo "Step 5"
+REALM=dcm4che
 # Change admin password if it's necesary
-if [ "$KEYCLOAK_PASSWORD" != "admin" ]; then
+if [ "$KEYCLOAK_PASSWORD" != "" ]; then
     echo "Setting new admin password"
     /opt/keycloak/bin/kcadm.sh set-password -r $REALM --username admin --new-password $KEYCLOAK_PASSWORD
 fi
