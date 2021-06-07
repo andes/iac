@@ -8,11 +8,11 @@ spec:
     spec:
       template:
         spec: 
+          restartPolicy: OnFailure
           containers:
           - name: backup-postgres
             image: andesnqn/backup-postgres:1.0
             imagePullPolicy: IfNotPresent
-            restartPolicy: OnFailure
             env:
                 {{- range $key, $val := .Values.env_vars }}
                 - name: {{ $key }}
