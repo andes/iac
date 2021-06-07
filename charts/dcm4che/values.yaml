@@ -32,6 +32,13 @@ global:
     custom_cert: true
     ca: "-empty-"
     # key: "-empty-"
+
+  backup:
+    server: 192.168.68.1
+    user: root
+    password: root
+    folder: /root/
+
     
 # Fluentbit
 fluent-bit:
