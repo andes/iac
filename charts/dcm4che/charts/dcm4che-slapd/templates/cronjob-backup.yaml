@@ -40,3 +40,10 @@ spec:
                     secretKeyRef:
                       name: backups 
                       key: folder
+            volumeMounts:
+            - name: vm-localtime
+              mountPath: /etc/localtime            
+          volumes:
+          - name: vm-localtime
+            hostPath:
+              path: /etc/localtime  
