@@ -11,7 +11,7 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: backup-ldap
-            image: andesnqn/backup-ldap:1.1
+            image: andesnqn/backup-ldap:1.2
             imagePullPolicy: IfNotPresent
             env:
                 {{- range $key, $val := .Values.env_vars }}
