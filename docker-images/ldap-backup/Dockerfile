@@ -2,7 +2,7 @@
 FROM alpine
 
 ENV BACKUP_FOLDER=/backup
-ENV BACKUP_FILENAME=backup_ldap.ldif
+ENV BACKUP_FILENAME=backup_ldap
 
 ENV LDAP_SERVER=1.1.1.1
 ENV SSH_SERVER=1.1.1.2

@@ -4,10 +4,18 @@
 
 mkdir -p $BACKUP_FOLDER
 
-ldapsearch -x -h $LDAP_SERVER -b 'dc=dcm4che,dc=org' "(objectclass=*)" > $BACKUP_FOLDER/$BACKUP_FILENAME
+# Backup DICOM, realm-management, users
+ldapsearch -x -h $LDAP_SERVER -b 'cn=DICOM Configuration,dc=dcm4che,dc=org' "(objectclass=*)" > $BACKUP_FOLDER/$BACKUP_FILENAME.dicom.ldif
+ldapsearch -x -h $LDAP_SERVER -b 'ou=realm-management,dc=dcm4che,dc=org' "(objectclass=*)" > $BACKUP_FOLDER/$BACKUP_FILENAME.realm-management.ldif
+ldapsearch -x -h $LDAP_SERVER -b 'ou=users,dc=dcm4che,dc=org' "(objectclass=*)" > $BACKUP_FOLDER/$BACKUP_FILENAME.users.ldif
 
-bzip2 $BACKUP_FOLDER/$BACKUP_FILENAME
 
-sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_SERVER:$SSH_DEST_FOLDER 'bash -s' < rotate.sh $BACKUP_FILENAME $SSH_DEST_FOLDER
-sshpass -p $SSH_PASS scp -o StrictHostKeyChecking=no $BACKUP_FOLDER/$BACKUP_FILENAME.bz2 $SSH_USER@$SSH_SERVER:$SSH_DEST_FOLDER
+# Tar and compress files
+tar -c $BACKUP_FOLDER/$BACKUP_FILENAME.tar $BACKUP_FOLDER/$BACKUP_FILENAME.*.ldif
+bzip2 $BACKUP_FOLDER/$BACKUP_FILENAME.tar
+
+# Rotate previous backups
+sshpass -p $SSH_PASS ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_SERVER 'bash -s' < rotate.sh $BACKUP_FILENAME.tar $SSH_DEST_FOLDER
+# Upload backup
+sshpass -p $SSH_PASS scp -o StrictHostKeyChecking=no $BACKUP_FOLDER/$BACKUP_FILENAME.tar.bz2 $SSH_USER@$SSH_SERVER:$SSH_DEST_FOLDER
 
