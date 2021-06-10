@@ -15,6 +15,15 @@ spec:
   minVersion: VersionTLS12
   sniStrict: false
 ---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: mongodb-charts-change-headers
+spec:
+  headers:
+    customRequestHeaders:
+        Host: "$DOMAIN"
+---
 # HTTPS
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -29,9 +38,11 @@ spec:
     kind: Rule
     middlewares:
       - name: mongodb-charts-compress
+      - name: mongodb-charts-change-headers
     services:
     - name: svc-mongo-charts
       port: 80
+      passHostHeader: false
   tls:
     hosts:
       - $DOMAIN
