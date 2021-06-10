@@ -202,3 +202,32 @@ questions:
   group: Seguridad
   show_subquestion_if: true
   subquestions:
+
+- variable: global.backup.server
+  default: "192.168.68.1"
+  description: "Servidor en el cual guardar los backups por SSH"
+  type: string
+  label: "Servidor"
+  group: Backup
+
+- variable: global.backup.user
+  default: "root"
+  description: "Usuario con el cual conectarse por SSH"
+  type: string
+  label: "Usuario"
+  group: Backup
+
+- variable: global.backup.password
+  default: ""
+  description: "Password con el cual conectarse por SSH"
+  type: password
+  label: "Password"
+  group: Backup
+
+- variable: global.backup.folder
+  default: ""
+  description: "Carpeta en la cual alojar los backups en el servidor SSH"
+  type: string
+  label: "Carpeta"
+  group: Backup
+
