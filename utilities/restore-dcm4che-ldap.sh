@@ -23,7 +23,7 @@ if [ "${REPLY}" != "s" ]; then
     exit 0
 fi
 
-bunzip2 $BACKUP_BZ2
+bunzip2 -k $BACKUP_BZ2
 tar -xf $BACKUP_TAR
 
 # Ingreso a la carpeta backup o backups
@@ -46,3 +46,5 @@ ldapadd -x -D "cn=admin,dc=dcm4che,dc=org" -h $LDAP_SERVER -w $LDAP_PASSWORD -f 
 ldapadd -x -D "cn=admin,dc=dcm4che,dc=org" -h $LDAP_SERVER -w $LDAP_PASSWORD -f backup_ldap.realm-management.ldif
 ldapadd -x -D "cn=admin,dc=dcm4che,dc=org" -h $LDAP_SERVER -w $LDAP_PASSWORD -f backup_ldap.dicom.ldif
 
+rm -Rf backups
+rm -Rf backup
