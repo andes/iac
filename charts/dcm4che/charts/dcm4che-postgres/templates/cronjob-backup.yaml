@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: cronjob-{{ include "dcm4che-postgres.fullname" . }}
 spec:
-  schedule: "00 19 * * *"
+  schedule: "00 22 * * *"
   jobTemplate:
     spec:
       template:
