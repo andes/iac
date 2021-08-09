@@ -19,7 +19,7 @@ workers_nodes=$(kubectl get nodes -o wide | grep worker | awk '{print $7}')
 
 # Show what I'm going to do
 echo 'Buscando y desmontando disco en los nodos con el comando...'
-echo $workers_nodes | tr " " "\n" | xargs -I % bash -c 'echo "echo <pwd> | sshpass -e ssh '$2'@%  mount | grep '$stucked_pvc' | cut -d\  -f 3 | xargs -I @ sh -c  "echo <pwd> | sudo -S umount @""'
+# echo $workers_nodes | tr " " "\n" | xargs -I % bash -c 'echo "echo <pwd> | sshpass -e ssh '$2'@%  mount | grep '$stucked_pvc' | cut -d\  -f 3 | xargs -I @ sh -c  "echo <pwd> | sudo -S umount @""'
 
 # Do it
 echo $workers_nodes | tr " " "\n" | xargs -I % bash -c "echo $SSHPASS | sshpass -e ssh $2@%  'mount | grep $stucked_pvc | cut -d\  -f 3 | xargs -I@ sh -c \"echo $SSHPASS | sudo -S umount @ \" '"
