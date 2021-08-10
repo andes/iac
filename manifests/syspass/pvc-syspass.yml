@@ -1,0 +1,26 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    name: pvc-syspass-config
+    namespace: $NAMESPACE
+spec:
+    storageClassName: csi-sc
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 1Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+    name: pvc-syspass-backup
+    namespace: $NAMESPACE
+spec:
+    storageClassName: csi-sc
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 1Gi
+

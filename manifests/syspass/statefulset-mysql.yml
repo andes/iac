@@ -1,0 +1,40 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+    name: syspass-mysql
+    namespace: $NAMESPACE
+spec:
+    replicas: 1
+    serviceName: syspass-mysql
+    selector:
+        matchLabels:
+          app: syspass-mysql
+    template:
+        metadata:
+            labels: 
+              app: syspass-mysql
+        spec:
+            containers:
+                - name: syspass-mysql
+                  image: mariadb:10.2.33
+                  ports:
+                     - containerPort: 3306
+                  volumeMounts:
+                      - name: disco
+                        mountPath: /var/lib/mysql
+                      - name: dump
+                        mountPath: /docker-entrypoint-initdb.d/dump.sql
+                        subPath: dump.sql 
+                  env:
+                      - name: MYSQL_ROOT_PASSWORD
+                        valueFrom:
+                            secretKeyRef:
+                                name: syspass-mysql-root-password
+                                key: MYSQL_ROOT_PASSWORD
+            volumes:
+                - name: disco
+                  persistentVolumeClaim:
+                    claimName: pvc-syspass-mysql
+                - name: dump
+                  secret: 
+                     secretName: syspass-mysql-dump

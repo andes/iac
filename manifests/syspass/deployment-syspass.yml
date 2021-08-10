@@ -1,0 +1,60 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: syspass
+    namespace: $NAMESPACE
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+          app: syspass
+    template:
+        metadata:
+            labels: 
+              app: syspass
+        spec:
+            initContainers:
+                - name: init-syspass
+                  image: busybox:1.28
+                  # Copy syspass config files from secret to disk if they don't exist
+                  command: ['sh', '-c', "cp /syspass-secrets/* /syspass-dest/ > /dev/null"]
+                  volumeMounts:
+                      - name: disco-config
+                        mountPath: /syspass-dest
+                      - name: disco-config-secrets
+                        mountPath: /syspass-secrets
+            containers:
+                - name: syspass
+                  image: syspass/syspass:3.1.0
+                  ports:
+                     - containerPort: 80
+                     - containerPort: 443
+                  volumeMounts:
+                     - name: disco-config
+                       mountPath: /var/www/html/sysPass/app/config
+                     - name: disco-backup
+                       mountPath: /var/www/html/sysPass/app/backup
+                  env:
+                     - name: USE_SSL
+                       value: "no"
+                  startupProbe:
+                     httpGet:
+                        path: /
+                        scheme: HTTP
+                        port: 80
+                  livenessProbe:
+                     httpGet:
+                        path: /
+                        scheme: HTTP
+                        port: 80
+            volumes:
+                - name: disco-config
+                  persistentVolumeClaim:
+                      claimName: pvc-syspass-config
+                - name: disco-backup
+                  persistentVolumeClaim:
+                      claimName: pvc-syspass-backup
+                - name: disco-config-secrets
+                  secret:
+                      secretName: syspass-config
+
