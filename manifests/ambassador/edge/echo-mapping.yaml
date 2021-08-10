@@ -1,0 +1,9 @@
+---
+apiVersion: getambassador.io/v2
+kind:  Mapping
+metadata:
+  name:  webapp-mapping
+  namespace: ambassador
+spec:
+  prefix: /test/
+  service: http://httpbin.org

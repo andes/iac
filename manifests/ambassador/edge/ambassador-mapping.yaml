@@ -1,0 +1,11 @@
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+    name: echo-mapping
+spec:
+    prefix: /
+    service: http://echoserver.orly:8080
+    host: mi-echo.192.168.68.3.nip.io:31336
+    add_request_headers:
+        x-prueba-header: valor-1

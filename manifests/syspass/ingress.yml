@@ -1,0 +1,16 @@
+# HTTP
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-syspass  
+  namespace: $NAMESPACE
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`$DOMAIN`)
+    kind: Rule
+    services:
+    - name: svc-syspass  
+      port: 443
+      passHostHeader: true
