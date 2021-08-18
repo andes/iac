@@ -1,8 +1,7 @@
 # Config
-$EXCHANGE_FOLDER = "/Users/orlandobrea/Public/exchange/Logs"
-$EXCHANGE_DEST_BACKUP_FOLDER = "/Users/orlandobrea/Public/exchange/dest"
+$EXCHANGE_FOLDER = "E:\backuptest\origen"
+$EXCHANGE_DEST_BACKUP_FOLDER = "E:\backuptest\destino"
 $BACKUPS_TO_KEEP_PER_LEVEL = 3
-$EXCHANGE_BIN_FOLDER = "C:\Program Files\Microsoft\Exchange Server\V14\Bin"
 
 
 # Current level
@@ -26,6 +25,10 @@ $LEVEL = $args[0]
 $7zipPath = "$env:ProgramFiles\7-Zip\7z.exe"
 Set-Alias 7zip $7zipPath
 
+# Exchange
+$EXCHANGE_BIN_FOLDER = "$env:ProgramFiles\Microsoft\Exchange Server\V14\Bin\eseutil.exe"
+#Set-Alias eseutil $EXCHANGE_BIN_FOLDER
+
 # Functions
 function Get-Mk-Execution-Result {
     param (
@@ -35,8 +38,10 @@ function Get-Mk-Execution-Result {
     $data = Get-Data-For-Level $Lvl
     # execute command 
     # 'C:\Program Files\Microsoft\Exchange Server\V14\Bin\eseutil /mk "'+($data.sourceFolder)+'\'+($data.fileStartsWith)+'.chk"'
-    $mkCommandResponse = ($EXCHANGE_BIN_FOLDER+'\eseutil /mk "'+($data.sourceFolder)+'\'+($data.fileStartsWith)+'.chk"')
-    return $mkCommandResponse
+    #Write-Host (($data.sourceFolder)+'\'+($data.fileStartsWith)+'.chk') 
+    $mkCommandResponse = (eseutil /mk (($data.sourceFolder)+'\'+($data.fileStartsWith)+'.chk'))
+    #Write-Host (eseutil /mk "(($data.sourceFolder)+'\'+($data.fileStartsWith)+'.chk')")
+    return  [string]$mkCommandResponse
     # $mkCommandResponse = "Microsoft(R) Exchange Server Database Utilities
 # Version 6.5
 # Copyright (C) Microsoft Corporation. All Rights Reserved.
@@ -67,7 +72,7 @@ function Get-Checkpoint {
         return $Matches.checkpoint
     }
     Write-Error "La respuesta de eseutil no fue la esperada y no pude obtener el checkpoint"
-    Write-Error ($mkCommandResponse)
+    Write-Error $mkCommandResponse
     throw "Terminando la ejecucion por el error anterior"
 }
 
@@ -89,13 +94,13 @@ function Get-Files-After-Checkpoint {
         [string[]]$logFiles
     )
     Begin {
-        $checkpoint = Get-Checkpoint $LEVEL 
-        $found = false
+        $checkpoint = Get-Checkpoint $LEVEL
+        $found = $false
         $fileStartsWith = (Get-Data-For-Level $LEVEL).fileStartsWith
     }
     Process {
         foreach($file in $logFiles) {
-            if ($found) {
+            if ($found -ne $false) {
                 return $file
                 # Write-Host $file
             } else {
@@ -139,10 +144,11 @@ function Remove-Old-Backups {
     $data = (Get-Data-For-Level $LEVEL)
     Get-ChildItem -Path ($data.destinationFolder+"\..\")  -File -Name -Include ("Logs_bk_nivel_"+$LEVEL+"*.7z") |  Sort-Object -Descending | Select -Skip $BACKUPS_TO_KEEP_PER_LEVEL | ForEach-Object {$data.destinationFolder+"\..\\"+$_} | Remove-Item
 }
+ 
 
 # Main - Commands exec
-Get-ChildItem -Path (Get-Data-For-Level $LEVEL).sourceFolder  -Recurse -File -Name -Include *.log | Sort-Object -Descending -Property ModificationTime | Get-Files-After-Checkpoint | Move-Files
+Get-ChildItem -Path (Get-Data-For-Level $LEVEL).sourceFolder -File -Recurse -Force -Include *.log | Sort-Object -Descending -Property LastWriteTime | ForEach-Object {$_.Name} | Get-Files-After-Checkpoint | Move-Files
 Compress-Destination-Folder
 Remove-Old-Backups
 
-
+ 
