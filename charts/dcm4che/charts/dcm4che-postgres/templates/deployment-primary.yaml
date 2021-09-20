@@ -49,8 +49,6 @@ spec:
             {{- end}}
             - name: PG_MODE
               value: primary
-            - name: PGDATA
-              value: /data
             - name: PG_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -77,7 +75,7 @@ spec:
           - name: vm-timezone
             mountPath: /etc/timezone 
           - name: data
-            mountPath: /data
+            mountPath: /pgdata/dcm4che-postgres-primary-0/global
             {{ if eq $.Values.global.persistence.type "PVC" }}
             # For PVC we must create a folder, because the lost+found default folder on the root directory
             # makes postgres to throw an error
