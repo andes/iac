@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: andesnqn/postgres-dcm4chee
+  repository: dcm4che/postgres-dcm4chee
   pullPolicy: Always
 
 imagePullSecrets: []
