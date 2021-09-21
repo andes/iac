@@ -1,0 +1,27 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: wekan-compress
+  namespace: $NAMESPACE
+spec:
+  compress: {}
+---
+
+# HTTPS
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-wekan
+  namespace: $NAMESPACE
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`$DOMAIN`)
+    kind: Rule
+    middlewares:
+      - name: wekan-compress
+    services:
+    - name: wekan
+      port: 80
