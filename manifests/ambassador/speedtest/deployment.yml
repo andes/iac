@@ -1,0 +1,75 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-server
+  namespace: default
+  labels:
+    app: test-server
+spec:
+  containers:
+  - image: orlandobrea/test_server
+    imagePullPolicy: Always
+    name: test-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-server
+spec:
+  selector:
+    app: test-server
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+# Ambassador
+---
+apiVersion: getambassador.io/v2
+kind:  Mapping
+metadata:
+  name:  test-server-mapping
+  namespace: ambassador
+spec:
+  prefix: /test-server/
+  service: http://test-server.default:80
+# Traefik
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: test-server-compress
+  namespace: default
+spec:
+  compress: {}
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: test-server-tls
+spec:
+  minVersion: VersionTLS12
+  sniStrict: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: test-server
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`test-server.192-168-68-1.nip.io`)
+    kind: Rule
+    middlewares:
+      - name: test-server-compress
+    services:
+    - name: test-server
+      port: 80
+  tls:
+    hosts:
+      - test-server.192-168-68-1.nip.io
+    passthrough: false
+    options:
+      name: test-server-tls 

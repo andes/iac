@@ -1,0 +1,21 @@
+config:
+  target: "https://test-server.192-168-68-1.nip.io:30443"
+  tls:
+    rejectUnauthorized: false
+  phases:
+    - duration: 30
+      arrivalRate: 5
+      name: Warm up
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 50
+      name: Ramp up load
+scenarios:
+- name: "/"
+  flow:
+    - get:
+        url: "/"
+- name: "/hola"
+  flow:
+    - get:
+        url: "/hola"
