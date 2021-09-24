@@ -1,9 +1,12 @@
 # image: andesnqn/dcm4che-keycloak
-
-FROM dcm4che/keycloak:11.0.3
+ARG TAG=15.0.0
+FROM dcm4che/keycloak:$TAG
 
 COPY setenv.sh /
 
 COPY ./clients_conf /clients_conf
 COPY postStart.sh /
 COPY postStartScript.sh /
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["standalone.sh"]
