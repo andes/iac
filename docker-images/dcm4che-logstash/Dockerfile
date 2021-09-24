@@ -1,6 +1,6 @@
 # image: andesnqn/dcm4che-logstash
 
-FROM dcm4che/logstash-dcm4chee:7.9.1-11
+FROM dcm4che/logstash-dcm4chee:7.12.1-14
 
 COPY logstash.yml /etc/logstash.yml
 

@@ -19,7 +19,7 @@ echo "Step 2"
 # Ping keycloak to check if it's up
 STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://$(hostname -i):8880)
 
-echo "Step 3"
+echo "Verificando respuesta de keycloak"
 
 # Wait for keycloak to be up and running
 while [ $STATUS -ne 200 ]
