@@ -31,17 +31,17 @@ done
 echo "Step 4"
 echo "Adding custom clients"
 
-# REALM=master
-REALM=dcm4che
+REALM=master
+#REALM=dcm4che
 # Login with keycloak client
-#/opt/keycloak/bin/kcadm.sh config credentials --server http://$(hostname -i):8880/auth --realm dcm4che --user $KEYCLOAK_USER --password $KEYCLOAK_PASSWORD
-/opt/keycloak/bin/kcadm.sh config credentials --server http://$(hostname -i):8880/auth --realm $REALM --user admin --password admin
+/opt/keycloak/bin/kcadm.sh config credentials --server http://$(hostname -i):8880/auth --realm $REALM --user $KEYCLOAK_USER --password $KEYCLOAK_PASSWORD
+#/opt/keycloak/bin/kcadm.sh config credentials --server http://$(hostname -i):8880/auth --realm $REALM --user admin --password admin
 echo "Step 5"
 REALM=dcm4che
 # Change admin password if it's necesary
 if [ "$KEYCLOAK_PASSWORD" != "" ]; then
-    echo "Setting new admin password"
-    /opt/keycloak/bin/kcadm.sh set-password -r $REALM --username admin --new-password $KEYCLOAK_PASSWORD
+     echo "Setting new admin password"
+     /opt/keycloak/bin/kcadm.sh set-password -r $REALM --username admin --new-password $KEYCLOAK_PASSWORD
 fi
 echo "Step 6"
 # Prepare and import dcm4chee-arc-ui client
