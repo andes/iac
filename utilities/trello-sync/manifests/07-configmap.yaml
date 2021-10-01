@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trello-config
+  namespace: trello
+data:
+  config.json: |
+    {
+      "memberId": "orlandobrea",
+      "organization": "skynet295",
+      "sourceBoards": [
+        "Andes",
+        "Datacenter",
+        "HPN",
+        "Imagenes",
+        "Servicios Provinciales",
+        "Subsecretaria"
+      ],
+      "destBoard": "Vision General"
+    }

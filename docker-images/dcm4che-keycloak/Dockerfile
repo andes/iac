@@ -7,6 +7,4 @@ COPY setenv.sh /
 COPY ./clients_conf /clients_conf
 COPY postStart.sh /
 COPY postStartScript.sh /
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["standalone.sh"]
+COPY postStartAfter.sh /

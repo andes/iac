@@ -1,0 +1,40 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  creationTimestamp: null
+  name: sync-trello
+  namespace: trello
+spec:
+  jobTemplate:
+    metadata:
+      name: sync-trello
+    spec:
+      backoffLimit: 100
+      template:
+        spec:
+          containers:
+          - image: orlandobrea/sync-trello:0.9
+            name: sync-trello
+            imagePullPolicy: IfNotPresent
+            resources: {}
+            env:
+            - name: TRELLO_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: trello-api-auth
+                  key: TRELLO_KEY
+            - name: TRELLO_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: trello-api-auth
+                  key: TRELLO_TOKEN
+            volumeMounts:
+            - name: trello-config
+              mountPath: /app/config.js
+              subPath: config.json
+          restartPolicy: OnFailure
+          volumes:
+            - name: trello-config
+              configMap:
+                name: trello-config
+  schedule: '*/1 * * * *'
