@@ -1,0 +1,13 @@
+{
+  "memberId": "orlandobrea",
+  "organization": "skynet295",
+  "sourceBoards": [
+    "Andes",
+    "Datacenter",
+    "HPN",
+    "Imagenes",
+    "Servicios Provinciales",
+    "Subsecretaria"
+  ],
+  "destBoard": "Vision General"
+}
