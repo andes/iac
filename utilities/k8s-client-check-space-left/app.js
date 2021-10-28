@@ -2,6 +2,7 @@ const k8s = require("@kubernetes/client-node");
 const logger = require("pino")();
 const PagerDuty = require("pagerduty");
 const checkSpace = require("./src/check-space");
+require('dotenv').config();
 
 const NAMESPACE = process.env.NS || "default";
 const SPACE_USED_TRESHOLD = process.env.SPACE_USED_TRESHOLD || 10;
@@ -36,4 +37,9 @@ async function sendAlert(pod, spaceUsed) {
   );
 }
 
-checkSpace(k8s, logger, NAMESPACE, SPACE_USED_TRESHOLD, sendAlert)();
+function manageErrors(error) {
+  logger.error(error);
+  process.exit(-1);
+}
+
+checkSpace(k8s, logger, NAMESPACE, SPACE_USED_TRESHOLD, sendAlert)(manageErrors);
