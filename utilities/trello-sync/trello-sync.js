@@ -18,7 +18,7 @@ class TrelloSync {
     if (this.allOrgBoards.length == 0) {
       this.allOrgBoards = await this.trello.getOrgBoards(this.orgId);
     }
-    return this.allOrgBoards.find((board) => board.name == name);
+    return this.allOrgBoards.find((board) => board.name.toLowerCase() == name.toLowerCase());
   }
 
   async addDestBoard(destBoardName) {
@@ -138,9 +138,13 @@ class TrelloSync {
 
   async archiveCard(card) {
     this.logger.info(card, "Archiving card");
-    return await this.trello.makeRequest("put", "/1/cards/" + card.id, {
-      closed: true,
-    });
+    try {
+      return await this.trello.makeRequest("put", "/1/cards/" + card.id, {
+        closed: true,
+      });
+    } catch(e) {
+      return true;
+    }
   }
 
   async createCard(sourceCard, sourceList, destBoard) {
@@ -217,16 +221,14 @@ class TrelloSync {
     this.logger.info("archiveCardsOnBoardFromSourceCards");
     const cardsToArchive = await Promise.all(
       sourceCards.map(async (card) => {
-        const destCard = card.attachments.reduce((rta, attach) => {
+        const destCard = card.attachments ? card.attachments.reduce((rta, attach) => {
           if (rta !== undefined) return rta;
-          console.log(attach.url)
           const card = this.findCardByURL(attach.url, destBoard);
           return card ? card : rta;
-        }, undefined);
+        }, undefined) : [];
         return destCard;
       })
     );
-    console.log(cardsToArchive);
     await Promise.all(cardsToArchive.map((card) => this.archiveCard(card)));
   }
 
