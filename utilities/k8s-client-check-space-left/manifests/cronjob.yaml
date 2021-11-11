@@ -1,0 +1,38 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  creationTimestamp: null
+  name: check-pvc-space
+  namespace: $NAMESPACE
+spec:
+  jobTemplate:
+    metadata:
+      name: check-pvc-space
+    spec:
+      backoffLimit: 10
+      template:
+        spec:
+          serviceAccountName: check-pvc-space-sa
+          containers:
+          - image: orlandobrea/free-space-checker:0.1.1
+            name: check-pvc-space
+            imagePullPolicy: IfNotPresent
+            resources: {}
+            env:
+            - name: NS
+              valueFrom:
+                configMapKeyRef: 
+                  name: check-pvc-space
+                  key: NS
+            - name: SPACE_USED_TRESHOLD
+              valueFrom:
+                configMapKeyRef: 
+                  name: check-pvc-space
+                  key: SPACE_USED_TRESHOLD
+            - name: PAGER_DUTY_SERVICE_KEY
+              valueFrom:
+                configMapKeyRef: 
+                  name: check-pvc-space
+                  key: PAGER_DUTY_SERVICE_KEY
+          restartPolicy: OnFailure
+  schedule: '$SCHEDULE'

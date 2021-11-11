@@ -1,1 +1,9 @@
 ca.*
+dcm4che-install-lb/cert_updater/kubeconfig
+dcm4che-install-lb/lb_files/conf/nginx.conf
+dcm4che-install-lb/lb_files/conf/nginx.conf
+docker-images/ldap-backup
+manifests/ambassador/speedtest
+manifests/drone/values_old.yml
+manifests/mongo-charts/certs/fullchain.pem
+manifests/mongo-charts/certs/privkey.pem

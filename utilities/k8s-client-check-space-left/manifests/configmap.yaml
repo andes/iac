@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: check-pvc-space
+  namespace: 
+data:
+  NS: $NAMESPACE
+  SPACE_USED_TRESHOLD: '$SPACE_USED_TRESHOLD'
+  PAGER_DUTY_SERVICE_KEY: $PAGER_DUTY_SERVICE_KEY
