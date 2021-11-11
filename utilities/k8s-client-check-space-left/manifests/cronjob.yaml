@@ -14,7 +14,7 @@ spec:
         spec:
           serviceAccountName: check-pvc-space-sa
           containers:
-          - image: orlandobrea/test-kubernetes-client:0.1.1
+          - image: orlandobrea/free-space-checker:0.1.1
             name: check-pvc-space
             imagePullPolicy: IfNotPresent
             resources: {}
