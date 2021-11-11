@@ -44,6 +44,8 @@ service:
 
 env_vars:
   ARCHIVE_HOST: "dcm4che-archive"
+  SYSLOG_HOST: "dcm4che-logstash"
+  SYSLOG_PORT: 8514
   SYSLOG_PROTOCOL: "TLS"
 
 volume_ldap:

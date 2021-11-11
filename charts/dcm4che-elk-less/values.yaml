@@ -28,6 +28,12 @@ global:
     custom_cert: true
     ca: "-empty-"
     
+  backup:
+    server: 192.168.68.1
+    user: root
+    password: root
+    folder: /root/
+
 dcm4che-gatekeeper:
   enabled: true
 

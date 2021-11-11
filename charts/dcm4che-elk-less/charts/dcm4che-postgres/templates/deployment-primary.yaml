@@ -47,24 +47,12 @@ spec:
             - name: {{ $key }}
               value: {{ $val | quote}}
             {{- end}}
-            - name: PG_MODE
-              value: primary
-            - name: PG_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-admin
-                  key: password
-            - name: PG_PRIMARY_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-credentials
-                  key: password            
-            - name: PG_USER
+            - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
                   key: username
-            - name: PG_PASSWORD
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-credentials
