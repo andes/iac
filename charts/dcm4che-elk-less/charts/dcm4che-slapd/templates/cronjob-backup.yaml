@@ -1,0 +1,49 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob-{{ include "dcm4che-postgres.fullname" . }}
+spec:
+  schedule: "00 22 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec: 
+          restartPolicy: OnFailure
+          containers:
+          - name: backup-ldap
+            image: andesnqn/backup-ldap:1.4
+            imagePullPolicy: IfNotPresent
+            env:
+                {{- range $key, $val := .Values.env_vars }}
+                - name: {{ $key }}
+                  value: {{ $val | quote}}
+                {{- end}}
+                - name: LDAP_SERVER
+                  value: dcm4che-slapd
+                - name: SSH_SERVER
+                  valueFrom:
+                    secretKeyRef:
+                      name: backups 
+                      key: server
+                - name: SSH_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: backups 
+                      key: user
+                - name: SSH_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: backups 
+                      key: password
+                - name: SSH_DEST_FOLDER
+                  valueFrom:
+                    secretKeyRef:
+                      name: backups 
+                      key: folder
+            volumeMounts:
+            - name: vm-localtime
+              mountPath: /etc/localtime            
+          volumes:
+          - name: vm-localtime
+            hostPath:
+              path: /etc/localtime  

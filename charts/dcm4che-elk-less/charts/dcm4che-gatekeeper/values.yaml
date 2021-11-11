@@ -57,7 +57,6 @@ env_vars:
   PROXY_CLIENT_ID: kibana
   #PROXY_CLIENT_SECRET: f87cac0c-2516-42dd-9c04-f97ba8145d5d
   # PROXY_ENCRYPTION_KEY: AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j # ToDo validar que funcione bien sin esta linea
-  # LOGSTASH_SERVER: dcm4che-logstash
 
 
 
