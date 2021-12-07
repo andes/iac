@@ -25,7 +25,7 @@ global:
     type: "PVC"
     storageClass: ""
   tls:
-    custom_cert: true
+    custom_cert: false
     ca: "-empty-"
     
   backup:
@@ -33,7 +33,4 @@ global:
     user: root
     password: root
     folder: /root/
-
-dcm4che-gatekeeper:
-  enabled: true
 
