@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@kubernetes/client-node": "^0.15.1",
+    "dotenv": "^10.0.0",
     "pagerduty": "^0.0.3",
     "pino": "^7.0.0-rc.9",
     "ramda": "^0.27.1"
