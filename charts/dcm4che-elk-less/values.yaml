@@ -34,6 +34,3 @@ global:
     password: root
     folder: /root/
 
-dcm4che-gatekeeper:
-  enabled: true
-
