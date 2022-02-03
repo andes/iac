@@ -1,0 +1,22 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  annotations:
+  name: ingress-turnero
+spec:
+  entryPoints:
+  - web
+  routes:
+  - kind: Rule
+    match: Host(`turnero-farmacia.andes.gob.ar`) && PathPrefix(`/api`)
+    services:
+    - name: svc-turnero-back
+      passHostHeader: true
+      port: 1337
+  - kind: Rule
+    match: Host(`turnero-farmacia.andes.gob.ar`)
+    services:
+    - name: svc-turnero-front
+      passHostHeader: true
+      port: 4200
+
