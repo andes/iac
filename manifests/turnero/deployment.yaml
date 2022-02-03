@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: turnero
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: turnero
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: turnero
+    spec:
+      containers:
+      - image: blooopa/turnero
+        imagePullPolicy: Always
+        name: turnero
+        ports:
+        - containerPort: 1337
+          protocol: TCP
+        - containerPort: 4200
+          protocol: TCP
+        resources: {}
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
