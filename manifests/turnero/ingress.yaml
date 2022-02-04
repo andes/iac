@@ -1,7 +1,6 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  annotations:
   name: ingress-turnero
 spec:
   entryPoints:
