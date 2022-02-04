@@ -4,7 +4,6 @@ metadata:
   annotations:
   name: svc-turnero-back
 spec:
-  clusterIP: 10.43.173.187
   ports:
   - port: 1337
     protocol: TCP
