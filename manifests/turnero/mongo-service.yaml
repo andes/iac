@@ -3,10 +3,9 @@ kind: Service
 metadata:
   labels:
     app: mongodb
-  name: mongodb-v67pb
+  name: mongodb
   namespace: turnero-traumato
 spec:
-  clusterIP: 10.43.142.92
   ports:
   - name: mongodb
     port: 27017
@@ -14,7 +13,6 @@ spec:
     targetPort: mongodb
   selector:
     app: mongodb
-    release: mongodb-v67pb
   sessionAffinity: None
   type: ClusterIP
 status:
