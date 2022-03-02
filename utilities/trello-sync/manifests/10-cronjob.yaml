@@ -13,7 +13,7 @@ spec:
       template:
         spec:
           containers:
-          - image: orlandobrea/sync-trello:0.9
+          - image: orlandobrea/sync-trello:1.0.1
             name: sync-trello
             imagePullPolicy: IfNotPresent
             resources: {}
