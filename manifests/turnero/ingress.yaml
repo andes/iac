@@ -7,13 +7,13 @@ spec:
   - web
   routes:
   - kind: Rule
-    match: Host(`turnero-farmacia.andes.gob.ar`) && PathPrefix(`/api`)
+    match: Host(`turnero-farmacia.hospitalneuquen.org.ar`) && PathPrefix(`/api`)
     services:
     - name: svc-turnero-back
       passHostHeader: true
       port: 1337
   - kind: Rule
-    match: Host(`turnero-farmacia.andes.gob.ar`)
+    match: Host(`turnero-farmacia.hospitalneuquen.org.ar`)
     services:
     - name: svc-turnero-front
       passHostHeader: true

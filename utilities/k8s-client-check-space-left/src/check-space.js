@@ -5,7 +5,7 @@ function checkSpace(k8s, logger, namespace, spaceUsedTreshold, sendAlert) {
   const kc = new k8s.KubeConfig();
   logger.level = "info";
   kc.loadFromCluster();
-  // kc.loadFromFile("/Users/orlandobrea/.kube/config.pacs-cluster-hpn");
+  //kc.loadFromFile("/Users/orlandobrea/.kube/config.pacs-cluster-hpn");
 
   const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
   const exec = new k8s.Exec(kc);
@@ -203,7 +203,7 @@ function checkSpace(k8s, logger, namespace, spaceUsedTreshold, sendAlert) {
     volumesExceedTreshold.forEach((space) => sendAlert(pod, space.used));
   }
 
-  return () => {
+  return (manageErrors) => {
     getPVCNamesFromNS(namespace).then((pvcNames) => {
       getPodsNamesFromNS(namespace).then((podNames) => {
         const podsWithMatchingVolumes = getPodsAndVolumesMatchingPVCNames(
@@ -226,9 +226,9 @@ function checkSpace(k8s, logger, namespace, spaceUsedTreshold, sendAlert) {
               checkSpaceTreshold(pod, filtered);
             }
           });
-        });
-      });
-    });
+        }).catch(e => manageErrors(e));
+      }).catch(e => manageErrors(e));
+    }).catch(e => manageErrors(e));
   };
 }
 
