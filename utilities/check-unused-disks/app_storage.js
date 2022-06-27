@@ -12,7 +12,7 @@ function loadVmWareDisks(filename) {
 function parseDiskContent(content) {
   return new Promise((resolve, reject) => {
     csv.parse(content, {columns: true, delimiter: ','}, (err, data) => {
-      err && reject(err)
+      if(err) return reject(err)
       // const disks = data.filter(row => row.Datastore == DATASTORE && row['Virtual Machine'] == '');
       const disks = data.filter(row => row.Datastore == DATASTORE);
       resolve(disks)
@@ -128,7 +128,14 @@ async function convertVolumeHandleToVMDiskName(volume) {
   }
 }
 
+function checkMinimumRequirements() {
+  const version = process.version.replace('v', '');
+  if (version < '16.0.0') 
+    throw new Error('Se necesita de Node v16 o superior');
+}
+
 (async () => {
+  checkMinimumRequirements()
   const [,,csvFile] = process.argv;
   if (!csvFile) {
     console.log('Uso: node app_storage.js <archivo CSV exportado del Unity>')
