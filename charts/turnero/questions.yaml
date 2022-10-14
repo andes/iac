@@ -1,0 +1,15 @@
+questions:
+- variable: domain
+  default: ""
+  description: "App domain"
+  type: string
+  label: "App domain"
+  group: "Backend"
+
+
+- variable: database.connection_string
+  default: "mongodb://server:port/db"
+  description: "MongoDB connection string"
+  type: string
+  label: "DB Connection"
+  group: "DataBase"

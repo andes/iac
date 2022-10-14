@@ -1,0 +1,5 @@
+domain:
+  endpoint: turnero.test-server.com
+database:
+  connection_string: mongodb://server:port/db
+

@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: turnero-api
+  labels:
+    app: turnero-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: turnero-api
+  template:
+    metadata:
+      labels:
+        name: turnero-api
+        app: turnero-api
+    spec:
+      containers:
+        - name: turnero-api
+          image: "andesnqn/turnero-api"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+          env:
+            - name: DB_HOST 
+              valueFrom:
+                secretKeyRef:
+                  name: turnero
+                  key: connection_string                     

@@ -1,0 +1,14 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: turnero-api
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`{{ .Values.domain }}`) && PathPrefix(`/api`)  
+    kind: Rule
+    services:
+    - name: turnero-api
+      port: 3000
