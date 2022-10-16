@@ -1,11 +1,14 @@
 const logger = require("pino")();
+const app = require("express")();
 require("dotenv").config();
 const TrelloSync = require("./trello-sync");
 const config = require("./config.json");
+const api = require("./api");
 
-logger.level = "info";
+logger.level = "debug";
+const PORT = process.env.PORT || 3000;
 
-async function sync(trelloKey, trelloToken, conf) {
+async function initializeTrelloSync(trelloKey, trelloToken, conf) {
   const sync = new TrelloSync(
     trelloKey,
     trelloToken,
@@ -18,7 +21,17 @@ async function sync(trelloKey, trelloToken, conf) {
       async (boardName) => await sync.addToSourceBoards(boardName)
     )
   );
-  sync.syncCardsFromSource();
+  return sync;
+}
+
+async function initializeAPI(trelloKey, trelloToken, config, app) {
+  const trelloSync = await initializeTrelloSync(
+    trelloKey,
+    trelloToken,
+    config
+  );
+
+  api.initialize({ app, port: PORT, logger, config, trelloSync });
 }
 
 try {
@@ -30,7 +43,8 @@ try {
       "Faltan las variables de entorno TRELLO_KEY y/o TRELLO_TOKEN"
     );
   }
-  sync(process.env.TRELLO_KEY, process.env.TRELLO_TOKEN, config);
+  // sync(process.env.TRELLO_KEY, process.env.TRELLO_TOKEN, config);
+  initializeAPI(process.env.TRELLO_KEY, process.env.TRELLO_TOKEN, config, app)
 } catch (e) {
   logger.error(e);
 }

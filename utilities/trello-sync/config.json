@@ -1,13 +1,10 @@
 {
   "memberId": "orlandobrea",
-  "organization": "skynet295",
+  "organization": "demosync1",
   "sourceBoards": [
-    "Andes",
-    "Datacenter",
-    "HPN",
-    "Imagenes",
-    "Servicios Provinciales",
-    "Subsecretaria"
+    "Child Board 1",
+    "Child Board 2"
   ],
-  "destBoard": "Vision General"
+  "destBoard": "Overview Board",
+  "callback_server": "https://f066-190-108-192-2.sa.ngrok.io"
 }

@@ -7,18 +7,85 @@ class TrelloSync {
   sourceBoards = [];
   destBoard = undefined;
   trello = undefined;
+  trelloToken = undefined;
 
   constructor(trelloKey, trelloToken, orgId, logger) {
     this.orgId = orgId;
     this.trello = new Trello(trelloKey, trelloToken);
     this.logger = logger;
+    this.trelloToken = trelloToken;
+  }
+
+  async addWebhooks(callbackUrl) {
+    return Promise.allSettled(
+      this.sourceBoards.map((board) =>
+        this.trello.addWebhook("BoardSync", callbackUrl, board.id)
+      )
+    );
+  }
+
+  async removeWebhook(webhookId) {
+    return this.trello.deleteWebhook(webhookId);
+  }
+
+  async getWebhooks() {
+    return this.trello.makeRequest(
+      "get",
+      "/1/tokens/" + this.trelloToken + "/webhooks"
+    );
+  }
+
+  async removeAllWebhooks() {
+    const webhooks = await this.getWebhooks();
+    return Promise.all(webhooks.map((wh) => this.removeWebhook(wh.id)));
+  }
+
+  async updateCardFromSourceCardId(
+    sourceCardId,
+    sourceList,
+    action
+  ) {
+    try {
+      console.log(sourceList)
+      const sourceCard = await this.getCard(sourceCardId);
+      switch (action) {
+        case "createCard":
+          this.createCard(sourceCard, sourceList, this.destBoard);
+          break;
+        case "updateCard":
+          this.updateCard(sourceCard, sourceList, this.destBoard);
+          break;
+        case "deleteCard":
+          this.archiveCardOnDestBoard(sourceCard, sourceList, this.destBoard);
+          break;
+        default:
+          break;
+      }
+    } catch (e) {
+      this.logger.error(e);
+      // console.log("ERROR");
+      // console.log(e);
+    }
+  }
+
+  async getCard(cardId) {
+    const responses = await Promise.all([
+      this.trello.makeRequest(
+        "get",
+        "/1/cards/" + cardId
+      ),
+      this.trello.makeRequest("get", "/1/cards/" + cardId + "/attachments"),
+    ]);
+    return { ...responses[0], attachments: responses[1] };
   }
 
   async getBoardFromName(name) {
     if (this.allOrgBoards.length == 0) {
       this.allOrgBoards = await this.trello.getOrgBoards(this.orgId);
     }
-    return this.allOrgBoards.find((board) => board.name.toLowerCase() == name.toLowerCase());
+    return this.allOrgBoards.find(
+      (board) => board.name.toLowerCase() == name.toLowerCase()
+    );
   }
 
   async addDestBoard(destBoardName) {
@@ -142,7 +209,7 @@ class TrelloSync {
       return await this.trello.makeRequest("put", "/1/cards/" + card.id, {
         closed: true,
       });
-    } catch(e) {
+    } catch (e) {
       return true;
     }
   }
@@ -153,15 +220,47 @@ class TrelloSync {
     if (!destList) throw new Error("Lista no encontrada en el board destino");
     const newCard = await this.trello.addCard(
       sourceCard.name,
-      sourceCard.description,
+      sourceCard.description || sourceCard.desc,
       destList.id
     );
     await this.trello.addAttachmentToCard(newCard.id, sourceCard.url);
     await this.trello.addAttachmentToCard(sourceCard.id, newCard.url);
   }
 
+  async archiveCardOnDestBoard(sourceCard, sourceList, destBoard) {
+    this.logger.debug("archiveCard");
+    const destList = this.findListInBoardByName(sourceList.name, destBoard);
+    if (!destList) throw new Error("Lista no encontrada en el board destino");
+    const destCard = sourceCard.attachments.reduce((rta, attach) => {
+      if (rta !== undefined) return rta;
+      const card = this.findCardByURL(attach.url, destBoard);
+      return card ? card : rta;
+    }, undefined);
+    this.logger.debug(destCard, "destCard");
+    if (destCard == undefined) {
+      this.logger.debug("-----------------------NO encontrada");
+      throw new Error(
+        `Tarjeta "${sourceList.name}-${sourceCard.name}" no encontrada en el board destino`
+      );
+    }
+    this.findListByCard(destCard, destBoard);
+    // compare cards & update if necesary
+    sourceCard.name != destCard.name &&
+      (await this.trello.archiveCard(destCard.id, "name", sourceCard.name));
+    sourceCard.name != destCard.name &&
+      this.logger.info(
+        {
+          changed: sourceCard.name != destCard.name,
+          prev: destCard.name,
+          new: sourceCard.name,
+        },
+        "name changed? "
+      );
+  }
+
   async updateCard(sourceCard, sourceList, destBoard) {
     this.logger.debug("updateCard");
+    console.log(sourceCard)
     const destList = this.findListInBoardByName(sourceList.name, destBoard);
     if (!destList) throw new Error("Lista no encontrada en el board destino");
     const destCard = sourceCard.attachments.reduce((rta, attach) => {
@@ -189,11 +288,12 @@ class TrelloSync {
         },
         "name changed? "
       );
+    console.log(sourceCard.desc);
     sourceCard.description != destCard.description &&
       (await this.trello.updateCard(
         destCard.id,
         "description",
-        sourceCard.description
+        sourceCard.description || sourceCard.desc
       ));
     sourceCard.description != destCard.description &&
       this.logger.info(
@@ -221,11 +321,13 @@ class TrelloSync {
     this.logger.info("archiveCardsOnBoardFromSourceCards");
     const cardsToArchive = await Promise.all(
       sourceCards.map(async (card) => {
-        const destCard = card.attachments ? card.attachments.reduce((rta, attach) => {
-          if (rta !== undefined) return rta;
-          const card = this.findCardByURL(attach.url, destBoard);
-          return card ? card : rta;
-        }, undefined) : [];
+        const destCard = card.attachments
+          ? card.attachments.reduce((rta, attach) => {
+              if (rta !== undefined) return rta;
+              const card = this.findCardByURL(attach.url, destBoard);
+              return card ? card : rta;
+            }, undefined)
+          : [];
         return destCard;
       })
     );
@@ -240,10 +342,9 @@ class TrelloSync {
         return await Promise.all(
           board.lists.map(async (list) => {
             this.logger.debug(list.name, "----------List");
-            this.logger.debug("test 01");
             const archived = await this.getArchivedCardsOnBoard(board);
             this.logger.debug(archived, "Archived");
-            archivedCards.push(archived.filter(card => card!==undefined));
+            archivedCards.push(archived.filter((card) => card !== undefined));
             return Promise.all(
               list.cards.map(async (card) => {
                 try {

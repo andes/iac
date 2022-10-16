@@ -14,6 +14,3 @@ kubectl apply -f manifests/01-namespace.yaml
 envsubst < manifests/05-secret.yaml | kubectl apply -f -
 kubectl apply -f manifests/07-configmap.yaml
 kubectl apply -f manifests/10-cronjob.yaml
-
-
-
