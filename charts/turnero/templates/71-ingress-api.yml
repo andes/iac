@@ -12,3 +12,4 @@ spec:
     services:
     - name: turnero-api
       port: 3000
+      passHostHeader: true
