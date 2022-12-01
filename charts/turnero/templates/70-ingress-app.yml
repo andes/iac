@@ -5,7 +5,7 @@ metadata:
   name: turnero-app
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
   - match: Host(`{{ .Values.domain }}`)
     kind: Rule
