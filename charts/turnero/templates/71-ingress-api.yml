@@ -1,14 +1,5 @@
 ---
 apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: server-headers
-spec:
-  headers:
-    customRequestHeaders:
-      X-Forwarded-Proto: "https"
----
-apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: turnero-api
@@ -18,8 +9,6 @@ spec:
   routes:
   - match: Host(`{{ .Values.domain }}`) && PathPrefix(`/api`)  
     kind: Rule
-    middlewares:
-        - name: server-headers
     services:
     - name: turnero-api
       port: 3000
