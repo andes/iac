@@ -5,7 +5,7 @@ metadata:
   name: turnero-api
 spec:
   entryPoints:
-    - websecure
+    - web
   routes:
   - match: Host(`{{ .Values.domain }}`) && PathPrefix(`/api`)  
     kind: Rule
