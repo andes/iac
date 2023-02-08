@@ -1,0 +1,26 @@
+---
+ - name: Install snmpd
+   hosts: kubernetes
+   become: true 
+   become_user: root 
+   vars:
+    centreon_ip: 172.16.1.83
+   tasks:
+    - name: Install snmpd - CentOS
+      ansible.builtin.package:
+        name: net-snmp
+        state: present
+      when: ansible_distribution|string == 'CentOS'
+    - name: Install snmpd - Ubuntu
+      ansible.builtin.package:
+        name: snmpd
+        state: present
+      when: ansible_distribution|string == 'Ubuntu'
+    - name: Configure snmpd 
+      ansible.builtin.template:
+        src: snmpd.conf.j2
+        dest: /etc/snmp/snmpd.conf
+    - name: Apply changes
+      ansible.builtin.service:
+        name: snmpd
+        state: restarted
